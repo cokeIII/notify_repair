@@ -1,0 +1,12 @@
+.h-login{
+    height: 80%;
+}
+.logo-login{
+    background: url("../img/logo-login.gif");
+    background-position: center;
+    background-size: 300px 300px;
+    background-repeat: no-repeat;
+}
+.h-alert{
+    height: 30px;
+}
