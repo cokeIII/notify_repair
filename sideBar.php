@@ -48,6 +48,11 @@ if (!empty($_SESSION["people_id"])) {
                 <i class="fas fa-wrench"></i>
                 <span>แจ้งซ่อม</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo $url . '/manageMap/map.php'; ?>">
+            <i class="fas fa-map-marked-alt"></i>
+                <span>จัดการแผนที่</span></a>
+        </li>
     <?php } ?>
 
 

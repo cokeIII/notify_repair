@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html; charset=UTF-8');
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $url = "https://";
 else
@@ -27,3 +28,8 @@ session_start();
 <link href="<?php echo $url.'/css/sb-admin-2.min.css" rel="stylesheet';?>">
 <link rel="stylesheet" href="http://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="<?php echo $url.'/css/custom.css';?>">
+<link rel="stylesheet" href="<?php echo $url.'/css/zoom-marker.css';?>">
+<link rel="stylesheet" href="<?php echo $url.'/css/easy-loading.css';?>">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="<?php echo $url.'/js/jquery-ui-1.12.1.custom/jquery-ui.min.css';?>">
+

@@ -2,7 +2,12 @@
 <html lang="en">
 
 <head>
-    <?php require_once "../setHead.php";?>
+    <?php require_once "../setHead.php"; ?>
+    <?php
+        if(empty($_SESSION["people_id"])){
+            header("location: ../index.php");
+        }
+    ?>
 </head>
 
 <body id="page-top">
@@ -23,11 +28,8 @@
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-
-                    <!-- Content Row -->
-   
-                <!-- /.container-fluid -->
+                    <img src="../img/0002.jpg" alt="" width="80%" height="50%">
+                    <!-- /.container-fluid -->
                 </div>
             </div>
             <!-- End of Main Content -->
@@ -47,7 +49,8 @@
         <i class="fas fa-angle-up"></i>
     </a>
 </body>
-<?php require_once "../setFoot.php";?>
+<?php require_once "../setFoot.php"; ?>
+
 </html>
 <script>
 

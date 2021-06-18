@@ -1,7 +1,8 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "12345678";
+$password = "";
 $db = "notify_repair";
 // Create connection
 $conn = new mysqli($servername, $username, $password,$db);
+$conn->set_charset("utf8");
