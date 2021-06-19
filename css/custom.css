@@ -4,8 +4,11 @@
 .logo-login{
     background: url("../img/logo-login.gif");
     background-position: center;
-    background-size: 300px 300px;
+    background-size: 250px 250px;
     background-repeat: no-repeat;
+    /* background-color: rgb(175, 47, 47); */
+    /* background-position: right; */
+    
 }
 .h-alert{
     height: 30px;

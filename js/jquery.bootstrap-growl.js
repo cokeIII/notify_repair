@@ -24,7 +24,7 @@
     }
     offsetAmount = options.offset.amount;
     $(".bootstrap-growl").each(function() {
-      return offsetAmount = Math.max(offsetAmount, parseInt($(this).css(options.offset.from)) + $(this).outerHeight() + options.stackup_spacing);
+      return offsetAmount = Math.max(offsetAmount, parseInt($(this).css(options.offset.from)));
     });
     css = {
       "position": (options.ele === "body" ? "fixed" : "absolute"),

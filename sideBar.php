@@ -53,6 +53,11 @@ if (!empty($_SESSION["people_id"])) {
             <i class="fas fa-map-marked-alt"></i>
                 <span>จัดการแผนที่</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo $url . '/manageRoom/room.php'; ?>">
+            <i class="fas fa-door-open"></i>
+                <span>จัดการห้องเรียน</span></a>
+        </li>
     <?php } ?>
 
 

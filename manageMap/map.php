@@ -8,7 +8,9 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select people_dep_id,people_dep_name from people_dep order by people_dep_name";
+    $sql = "select people_dep_id,people_dep_name from people_dep
+    where people_dep_id not in ('1','2','3','4','5','330','999','888','329') 
+    order by people_dep_name";
     $res = mysqli_query($conn, $sql);
 
     ?>
@@ -94,7 +96,7 @@
                             ele: "body", // parent container
                             offset: {
                                 from: "top",
-                                amount: 20
+                                amount: 100,
                             },
                             align: "center", // right, left or center
                             width: "auto",
@@ -104,7 +106,9 @@
                         });
                     return false
                 }
+
                 const marker = item.zoomMarker_AddMarker({
+                    id: $("#locationName").val(),
                     src: "../img/marker.svg",
                     x: position.x,
                     y: position.y,
@@ -135,6 +139,49 @@
                     }
                 };
                 // 画线
+                $.ajax({
+                    type: "POST",
+                    url: "../ajax/insertMap.php",
+                    data: {
+                        insertMap: true,
+                        people_dep_id: $("#locationName").val(),
+                        map_x: position.x,
+                        map_y: position.y
+                    },
+                    success: function(result) {
+                        if (result == "success") {
+                            $.bootstrapGrowl("เพิ่มข้อมูลสำเร็จ", // Messages
+                                { // options
+                                    type: "success", // info, success, warning and danger
+                                    ele: "body", // parent container
+                                    offset: {
+                                        from: "top",
+                                        amount: 100,
+                                    },
+                                    align: "center", // right, left or center
+                                    width: "auto",
+                                    delay: 4000,
+                                    allow_dismiss: true, // add a close button to the message
+                                    // stackup_spacing: 10
+                                });
+                        } else {
+                            $.bootstrapGrowl("เพิ่มข้อมูลไม่สำเร็จ", // Messages
+                                { // options
+                                    type: "danger", // info, success, warning and danger
+                                    ele: "body", // parent container
+                                    offset: {
+                                        from: "top",
+                                        amount: 100,
+                                    },
+                                    align: "center", // right, left or center
+                                    width: "auto",
+                                    delay: 4000,
+                                    allow_dismiss: true, // add a close button to the message
+                                    // stackup_spacing: 10
+                                });
+                        }
+                    }
+                });
                 const context = item.zoomMarker_Canvas();
                 if (context !== null) {
                     context.strokeStyle = 'black';
@@ -143,57 +190,149 @@
                     context.stroke();
                 }
                 if (++tagNumber >= 10)
-                    tagNumber = 1;
+                    tagNumber = 1
+                $("#locationName").val("").trigger('change')
+
             });
 
             // listen to marker click event, print to console and delete the marker
             item.on("zoom_marker_click", function(event, marker) {
-                $(".zoom-marker-hover-dialog").remove()
-                $('#zoom-marker-img').zoomMarker_RemoveMarker(marker.id);
+                $.confirm({
+                    title: 'delete',
+                    content: 'คุณต้องการลบสถานที่ ?',
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: "../ajax/deleteMap.php",
+                                data: {
+                                    delMap: true,
+                                    people_dep_id: marker.param.id,
+                                },
+                                success: function(result) {
+                                    if (result == "success") {
+                                        $(".zoom-marker-hover-dialog").hide()
+                                        $('#zoom-marker-img').zoomMarker_RemoveMarker(marker.id);
+                                    } else {
+                                        $.bootstrapGrowl("ลบไม่สำรเร็จ", // Messages
+                                            { // options
+                                                type: "danger", // info, success, warning and danger
+                                                ele: "body", // parent container
+                                                offset: {
+                                                    from: "top",
+                                                    amount: 100,
+                                                },
+                                                align: "center", // right, left or center
+                                                width: "auto",
+                                                delay: 4000,
+                                                allow_dismiss: true, // add a close button to the message
+                                                // stackup_spacing: 10
+                                            });
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function() {
+
+                        },
+                    }
+                });
             });
 
-            // // message for the beginning of image loading process
-            // item.on("zoom_marker_img_load", function(event, src) {
-            //     console.log("loading started for image : " + src);
-            //     EasyLoading.show({
-            //         text: $("<span>loading image</span>"),
-            //         button: $("<span>dismiss</span>"),
-            //         type: EasyLoading.TYPE.PACMAN
-            //     });
-            // });
+            // message for the beginning of image loading process
+            item.on("zoom_marker_img_load", function(event, src) {
+                console.log("loading started for image : " + src);
+                EasyLoading.show({
+                    text: $("<span>loading image</span>"),
+                    button: $("<span>dismiss</span>"),
+                    type: EasyLoading.TYPE.PACMAN
+                });
+            });
 
             // message for image loaded
-            // item.on("zoom_marker_img_loaded", function(event, size) {
-            //     console.log("image has been loaded with size: " + JSON.stringify(size));
-            //     // we have to set a timer in order to watching the loader in local environment, cause the loading speed is too fast
-            //     // setTimeout(function() {
-            //     //     EasyLoading.hide();
-            //     // }, 3000);
-            //     // item.zoomMarker_AddMarker({
-            //     //     src: "../img/marker.svg",
-            //     //     x: 300,
-            //     //     y: 300,
-            //     //     size: 40,
-            //     //     dialog: {
-            //     //         value: "i was added on 'zoom_marker_img_loaded' event",
-            //     //         style: {
-            //     //             color: "red"
-            //     //         }
-            //     //     },
-            //     //     hint: {
-            //     //         value: 'M',
-            //     //         style: {
-            //     //             color: "#ffffff",
-            //     //             left: "12px"
-            //     //         }
-            //     //     }
-            //     // });
-            // });
+            item.on("zoom_marker_img_loaded", function(event, size) {
+                console.log("image has been loaded with size: " + JSON.stringify(size));
+                // we have to set a timer in order to watching the loader in local environment, cause the loading speed is too fast
+                setTimeout(function() {
+                    EasyLoading.hide();
+                }, 2000);
+                $.ajax({
+                    type: "POST",
+                    url: "../ajax/getMap.php",
+                    data: {
+                        getMap: true,
+                    },
+                    success: function(result) {
+                        let obj = JSON.parse(result)
+                        obj.forEach(element => {
+                            item.zoomMarker_AddMarker({
+                                id: element.people_dep_id,
+                                src: "../img/marker.svg",
+                                x: element.map_x,
+                                y: element.map_y,
+                                size: 30,
+                                dialog: {
+                                    value: element.people_dep_name,
+                                    style: {
+                                        color: "black"
+                                    }
+                                },
+                                hint: {
+
+                                }
+                            });
+                        });
+                    }
+                });
+
+            });
 
             // message after at the end of Maker moving action
             item.on("zoom_marker_move_end", function(event, position) {
-
-                console.log("Marker moving ended on :" + JSON.stringify(position));
+                $.ajax({
+                    type: "POST",
+                    url: "../ajax/updateMap.php",
+                    data: {
+                        editMap: true,
+                        people_dep_id: position.markerObj.param.id,
+                        map_x: position.x,
+                        map_y: position.y
+                    },
+                    success: function(result) {
+                        if (result == "success") {
+                            $.bootstrapGrowl("แก้ไขข้อมูลสำเร็จ", // Messages
+                                { // options
+                                    type: "success", // info, success, warning and danger
+                                    ele: "body", // parent container
+                                    offset: {
+                                        from: "top",
+                                        amount: 100,
+                                    },
+                                    align: "center", // right, left or center
+                                    width: "auto",
+                                    delay: 4000,
+                                    allow_dismiss: true, // add a close button to the message
+                                    // stackup_spacing: 10
+                                });
+                        } else {
+                            $.bootstrapGrowl("แก้ไขข้อมูลไม่สำเร็จ", // Messages
+                                { // options
+                                    type: "danger", // info, success, warning and danger
+                                    ele: "body", // parent container
+                                    offset: {
+                                        from: "top",
+                                        amount: 100,
+                                    },
+                                    align: "center", // right, left or center
+                                    width: "auto",
+                                    delay: 4000,
+                                    allow_dismiss: true, // add a close button to the message
+                                    // stackup_spacing: 10
+                                });
+                        }
+                    }
+                });
+                console.log(position.markerObj.param.id);
             })
         }
 
