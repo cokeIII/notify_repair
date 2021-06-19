@@ -43,15 +43,21 @@
                         <div class="col-md-5 mt-3">
                             <div class="card shadow">
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        <label>ชื่อสถานที่</label>
-                                        <select name="locationName" id="locationName" class="form-control" style="width: 100%">
-                                            <option value="">--- กรุณาเลือกสถานที่ ---</option>
-                                            <?php while ($row = mysqli_fetch_array($res)) { ?>
-                                                <option value="<?php echo $row["people_dep_id"]; ?>"><?php echo $row["people_dep_name"]; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
+                                    <form id="formLocation" action="" method="post">
+                                        <div class="form-group">
+                                            <label>ชื่อสถานที่</label>
+                                            <select name="locationName" id="locationName" class="form-control" style="width: 100%">
+                                                <option value="">--- กรุณาเลือกสถานที่ ---</option>
+                                                <?php while ($row = mysqli_fetch_array($res)) { ?>
+                                                    <option value="<?php echo $row["people_dep_id"]; ?>"><?php echo $row["people_dep_name"]; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>รูปผังอาคาร</label>
+                                            <input type="file" class="form-control" name="picBuild" id="picBuild">
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                             <!-- /.container-fluid -->
@@ -139,47 +145,68 @@
                     }
                 };
                 // 画线
+                var fd = new FormData();
+                var files = $('#picBuild')[0].files;
+
+                // Check file selected or not
+                if (files.length > 0) {
+                    fd.append('picBuild', files[0]);
+                }
+                fd.append('dep_id', $("#locationName").val())
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/insertMap.php",
-                    data: {
-                        insertMap: true,
-                        people_dep_id: $("#locationName").val(),
-                        map_x: position.x,
-                        map_y: position.y
-                    },
+                    url: "../ajax/uploadBuilding.php",
+                    data: fd,
+                    contentType: false,
+                    processData: false,
                     success: function(result) {
-                        if (result == "success") {
-                            $.bootstrapGrowl("เพิ่มข้อมูลสำเร็จ", // Messages
-                                { // options
-                                    type: "success", // info, success, warning and danger
-                                    ele: "body", // parent container
-                                    offset: {
-                                        from: "top",
-                                        amount: 100,
-                                    },
-                                    align: "center", // right, left or center
-                                    width: "auto",
-                                    delay: 4000,
-                                    allow_dismiss: true, // add a close button to the message
-                                    // stackup_spacing: 10
-                                });
-                        } else {
-                            $.bootstrapGrowl("เพิ่มข้อมูลไม่สำเร็จ", // Messages
-                                { // options
-                                    type: "danger", // info, success, warning and danger
-                                    ele: "body", // parent container
-                                    offset: {
-                                        from: "top",
-                                        amount: 100,
-                                    },
-                                    align: "center", // right, left or center
-                                    width: "auto",
-                                    delay: 4000,
-                                    allow_dismiss: true, // add a close button to the message
-                                    // stackup_spacing: 10
-                                });
-                        }
+                        let obj = JSON.parse(result)
+                        $.ajax({
+                            type: "POST",
+                            url: "../ajax/insertMap.php",
+                            data: {
+                                insertMap: true,
+                                people_dep_id: $("#locationName").val(),
+                                map_x: position.x,
+                                map_y: position.y,
+                                pic_build: obj.namePic
+                            },
+                            success: function(result) {
+                                if (result == "success") {
+                                    $('#formLocation').trigger("reset");
+                                    $("#locationName").val("").trigger('change')
+                                    $.bootstrapGrowl("เพิ่มข้อมูลสำเร็จ", // Messages
+                                        { // options
+                                            type: "success", // info, success, warning and danger
+                                            ele: "body", // parent container
+                                            offset: {
+                                                from: "top",
+                                                amount: 100,
+                                            },
+                                            align: "center", // right, left or center
+                                            width: "auto",
+                                            delay: 4000,
+                                            allow_dismiss: true, // add a close button to the message
+                                            // stackup_spacing: 10
+                                        });
+                                } else {
+                                    $.bootstrapGrowl("เพิ่มข้อมูลไม่สำเร็จ", // Messages
+                                        { // options
+                                            type: "danger", // info, success, warning and danger
+                                            ele: "body", // parent container
+                                            offset: {
+                                                from: "top",
+                                                amount: 100,
+                                            },
+                                            align: "center", // right, left or center
+                                            width: "auto",
+                                            delay: 4000,
+                                            allow_dismiss: true, // add a close button to the message
+                                            // stackup_spacing: 10
+                                        });
+                                }
+                            }
+                        });
                     }
                 });
                 const context = item.zoomMarker_Canvas();
@@ -191,7 +218,7 @@
                 }
                 if (++tagNumber >= 10)
                     tagNumber = 1
-                $("#locationName").val("").trigger('change')
+
 
             });
 
