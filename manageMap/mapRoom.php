@@ -8,9 +8,7 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select people_dep_id,people_dep_name from people_dep
-    where people_dep_id in (select people_dep_id from map)  
-    order by people_dep_name";
+    $sql = "select art_number,art_name,dep_id from articles";
     $res = mysqli_query($conn, $sql);
 
     ?>
@@ -45,18 +43,18 @@
                                 <div class="card-body">
                                     <form id="formLocation" action="" method="post">
                                         <div class="form-group">
-                                            <label>แผนก</label>
-                                            <select name="dep_id" id="dep_id" class="form-control" style="width: 100%">
-                                                <option value="">--- กรุณาเลือกแผนก ---</option>
+                                            <label>ห้อง</label>
+                                            <select name="art_number" id="art_number" class="form-control" style="width: 100%">
+                                                <option value="">--- กรุณาเลือกห้อง ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>
-                                                    <option value="<?php echo $row["people_dep_id"]; ?>"><?php echo $row["people_dep_name"]; ?></option>
+                                                    <option dep_id="<?php echo $row["dep_id"]; ?>" value="<?php echo $row["art_number"]; ?>"><?php echo $row["art_number"] . ' ' . $row["art_name"]; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>ห้อง</label>
-                                            <select name="art_id" id="art_id" class="form-control" style="width: 100%">
-                                                <option value="">--- เลือกห้อง ---</option>
+                                            <label>อุปกรณ์</label>
+                                            <select name="equ_number" id="equ_number" class="form-control" style="width: 100%">
+                                                <option value="">--- เลือกอุปกรณ์ ---</option>
                                             </select>
                                         </div>
                                     </form>
@@ -89,8 +87,8 @@
 </html>
 <script>
     $(document).ready(function() {
-        $("#art_id").select2()
-        $("#dep_id").select2()
+        $("#art_number").select2()
+        $("#equ_number").select2()
         var picTag = 0;
         var tagNumber = 1;
 
@@ -99,8 +97,8 @@
             // handle "TAP" event and add marker to image
             item.on("zoom_marker_mouse_click", function(event, position) {
                 console.log("Mouse click on: " + JSON.stringify(position));
-                if ($("#art_id").val() == "") {
-                    $.bootstrapGrowl("กรุณาเลือกห้อง", // Messages
+                if ($("#equ_number").val() == "") {
+                    $.bootstrapGrowl("กรุณาเลือกอุปกรณ์", // Messages
                         { // options
                             type: "warning", // info, success, warning and danger
                             ele: "body", // parent container
@@ -118,7 +116,7 @@
                 }
 
                 const marker = item.zoomMarker_AddMarker({
-                    id: $("#art_id").val(),
+                    id: $("#equ_number").val(),
                     src: "../img/marker.svg",
                     x: position.x,
                     y: position.y,
@@ -139,7 +137,7 @@
                 });
                 // 手动配置dialog
                 marker.param.dialog = {
-                    value: "<h5 class='dlgPin'>" + $("#art_id option:selected").text() + "</h5>",
+                    value: "<h5 class='dlgPin'>" + $("#equ_number option:selected").text() + "</h5>",
                     offsetX: 20,
                     style: {
                         //"border-color": "#111212"
@@ -151,11 +149,11 @@
                 // 画线
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/updateArt.php",
+                    url: "../ajax/updateEqu.php",
                     data: {
-                        art_id: $("#art_id").val(),
-                        art_x: position.x,
-                        art_y: position.y,
+                        equ_number: $("#equ_number").val(),
+                        equ_x: position.x,
+                        equ_y: position.y,
                     },
                     success: function(result) {
                         if (result == "success") {
@@ -209,16 +207,16 @@
             item.on("zoom_marker_click", function(event, marker) {
                 $.confirm({
                     title: 'delete',
-                    content: 'คุณต้องการลบตำแหน่งห้อง ?',
+                    content: 'คุณต้องการลบตำแหน่งอุปกรณ์ ?',
                     buttons: {
                         confirm: function() {
                             $.ajax({
                                 type: "POST",
-                                url: "../ajax/updateArt.php",
+                                url: "../ajax/updateEqu.php",
                                 data: {
-                                    art_id: marker.param.id,
-                                    art_x: 0,
-                                    art_y: 0,
+                                    equ_number: marker.param.id,
+                                    equ_x: 0,
+                                    equ_y: 0,
                                 },
                                 success: function(result) {
                                     if (result == "success") {
@@ -285,22 +283,22 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/getMapBuild.php",
+                    url: "../ajax/getEqu.php",
                     data: {
-                        dep_id: $("#dep_id").val()
+                        art_number: $("#art_number").val()
                     },
                     success: function(result) {
                         let obj = JSON.parse(result)
                         obj.forEach(element => {
-                            if (element.art_x > 0 && element.art_y > 0) {
+                            if (element.equ_x > 0 && element.equ_y > 0) {
                                 item.zoomMarker_AddMarker({
-                                    id: element.art_id,
+                                    id: element.equ_number,
                                     src: "../img/marker.svg",
-                                    x: element.art_x,
-                                    y: element.art_y,
+                                    x: element.equ_x,
+                                    y: element.equ_y,
                                     size: 30,
                                     dialog: {
-                                        value: element.nameArt,
+                                        value: element.equ_number + "_" + element.equ_name,
                                         style: {
                                             color: "black"
                                         }
@@ -320,14 +318,15 @@
             item.on("zoom_marker_move_end", function(event, position) {
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/updateArt.php",
+                    url: "../ajax/updateEqu.php",
                     data: {
-                        art_id: $("#art_id").val(),
-                        art_x: position.x,
-                        art_y: position.y,
+                        equ_number: $("#equ_number").val(),
+                        equ_x: position.x,
+                        equ_y: position.y,
                     },
                     success: function(result) {
                         if (result == "success") {
+                            // $("#art_id").val("").trigger('change')
                             $.bootstrapGrowl("บันทึกข้อมูลสำเร็จ", // Messages
                                 { // options
                                     type: "success", // info, success, warning and danger
@@ -362,23 +361,23 @@
                 });
             })
         }
-        $("#dep_id").change(function() {
+        $("#art_number").change(function() {
             $.ajax({
                 type: 'POST',
-                url: "../ajax/getBuild.php",
+                url: "../ajax/getEqu.php",
                 data: {
-                    dep_id: $("#dep_id").val()
+                    art_number: $("#art_number").val()
                 },
                 success: function(response) {
                     let obj = JSON.parse(response)
-                    $("#art_id").empty();
-                    $("#art_id").append('<option value="">--- เลือกห้อง ---</option>')
+                    $("#equ_number").empty();
+                    $("#equ_number").append('<option value="">--- เลือกอุปกรณ์ ---</option>')
                     $.each(obj, function(index, value) {
-                        $("#art_id").append("<option value='" + value.art_id + "' > " +
-                            value.nameArt + "</option>")
+                        $("#equ_number").append("<option value='" + value.equ_number + "' > " +
+                            value.equ_number + '_' + value.equ_name + "</option>")
                     });
 
-                    $("#art_id").select2({
+                    $("#equ_number").select2({
                         width: '100%'
                     });
                 },
@@ -386,10 +385,10 @@
             $('#zoom-marker-img').zoomMarker_CleanMarker();
             // $('#zoom-marker-img').zoomMarker_CanvasClean();
             // $('#zoom-marker-img').zoomMarker_EnableDrag(false);
-            if (!UrlExists("../pic_buildings/" + $("#dep_id").val() + ".jpg")) {
+            if (!UrlExists("../pic_rooms/" + $("#art_number").val() + '_' + $("#art_number option:selected").attr("dep_id") + ".jpg")) {
                 $('#zoom-marker-img').zoomMarker_LoadImage("../img/notBuild.jpg");
             } else {
-                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_buildings/" + $("#dep_id").val() + ".jpg");
+                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_rooms/" + $("#art_number").val() + '_' + $("#art_number option:selected").attr("dep_id") + ".jpg");
             }
         })
         initImg($('#zoom-marker-img'));

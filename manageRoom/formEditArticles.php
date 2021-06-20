@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 border-left">
                                         <div class="form-group">
                                             <label>ชื่อห้องปฏิบัติการ</label>
                                             <input type="text" name="art_name" required class="form-control" placeholder="" value="<?php echo $rowArt["art_name"]; ?>">

@@ -9,6 +9,8 @@
     }
     ?>
 </head>
+<input type="hidden" id="art_number" value="<?php echo $_REQUEST["art_number"]; ?>">
+<input type="hidden" id="dep_id" value="<?php echo $_REQUEST["dep_id"]; ?>">
 
 <body id="page-top">
 
@@ -51,6 +53,33 @@
         <i class="fas fa-angle-up"></i>
     </a>
 </body>
+<!-- Modal -->
+<div class="modal fade layer-9999" id="repairEqu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">แจ้งซ่อมอุปกรณ์</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label >รายละเอียดอาการความเสียหาย</label>
+                            <textarea name="repair_des" id="" class="form-control" cols="30" rows="5"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">ส่งข้อมูล</button>
+            </div>
+        </div>
+    </div>
+</div>
 <?php require_once "../setFoot.php"; ?>
 
 </html>
@@ -68,9 +97,7 @@
 
             // listen to marker click event, print to console and delete the marker
             item.on("zoom_marker_click", function(event, marker) {
-                $.redirect("repairBuild.php", {
-                    dep_id: marker.param.id,
-                });
+                $('#repairEqu').modal('show');
             });
 
             // message for the beginning of image loading process
@@ -89,24 +116,24 @@
                 // we have to set a timer in order to watching the loader in local environment, cause the loading speed is too fast
                 setTimeout(function() {
                     EasyLoading.hide();
-                }, 2000);
+                }, 1000);
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/getMap.php",
+                    url: "../ajax/getEqu.php",
                     data: {
-                        getMap: true,
+                        art_number: $("#art_number").val(),
                     },
                     success: function(result) {
                         let obj = JSON.parse(result)
                         obj.forEach(element => {
                             item.zoomMarker_AddMarker({
-                                id: element.people_dep_id,
+                                id: element.equ_number,
                                 src: "../img/marker.svg",
-                                x: element.map_x,
-                                y: element.map_y,
+                                x: element.equ_x,
+                                y: element.equ_y,
                                 size: 40,
                                 dialog: {
-                                    value: element.people_dep_name,
+                                    value: element.equ_number + "_" + element.equ_name,
                                     style: {
                                         color: "black"
                                     }
@@ -130,15 +157,35 @@
         initImg($('#zoom-marker-img'));
 
         /******************** INIT ZoomMarker here *****************************/
-        $('#zoom-marker-img').zoomMarker({
-            src: "../img/0002.jpg",
-            rate: 0.2,
-            width: "50%",
-            height: "50%",
-            max: "100%",
-            markers: [
-                //{src:"../img/marker.svg", x:300, y:300}
-            ]
-        });
+        if (!UrlExists("../pic_rooms/" + $("#art_number").val() + "_" + $("#dep_id").val() + ".jpg")) {
+            $('#zoom-marker-img').zoomMarker({
+                src: "../img/emptyRoom.jpg",
+                rate: 0.2,
+                width: "50%",
+                height: "50%",
+                max: "100%",
+                markers: [
+                    //{src:"../img/marker.svg", x:300, y:300}
+                ]
+            });
+        } else {
+            $('#zoom-marker-img').zoomMarker({
+                src: "../pic_rooms/" + $("#art_number").val() + "_" + $("#dep_id").val() + ".jpg",
+                rate: 0.2,
+                width: "50%",
+                height: "50%",
+                max: "100%",
+                markers: [
+                    //{src:"../img/marker.svg", x:300, y:300}
+                ]
+            });
+        }
     })
+
+    function UrlExists(url) {
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.send();
+        return http.status != 404;
+    }
 </script>

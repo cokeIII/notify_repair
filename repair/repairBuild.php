@@ -9,6 +9,7 @@
     }
     ?>
 </head>
+<input type="hidden" id="dep_id" value="<?php echo $_REQUEST["dep_id"]; ?>">
 
 <body id="page-top">
 
@@ -68,8 +69,9 @@
 
             // listen to marker click event, print to console and delete the marker
             item.on("zoom_marker_click", function(event, marker) {
-                $.redirect("repairBuild.php", {
-                    dep_id: marker.param.id,
+                $.redirect("repairRoom.php", {
+                    art_number: marker.param.art_number+"",
+                    dep_id: $("#dep_id").val()
                 });
             });
 
@@ -89,33 +91,36 @@
                 // we have to set a timer in order to watching the loader in local environment, cause the loading speed is too fast
                 setTimeout(function() {
                     EasyLoading.hide();
-                }, 2000);
+                }, 1000);
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/getMap.php",
+                    url: "../ajax/getMapBuild.php",
                     data: {
-                        getMap: true,
+                        dep_id: $("#dep_id").val(),
                     },
                     success: function(result) {
                         let obj = JSON.parse(result)
                         obj.forEach(element => {
-                            item.zoomMarker_AddMarker({
-                                id: element.people_dep_id,
-                                src: "../img/marker.svg",
-                                x: element.map_x,
-                                y: element.map_y,
-                                size: 40,
-                                dialog: {
-                                    value: element.people_dep_name,
-                                    style: {
-                                        color: "black"
-                                    }
-                                },
-                                hint: {
+                            if (element.art_x > 0 && element.art_y > 0) {
+                                item.zoomMarker_AddMarker({
+                                    id: element.art_id,
+                                    art_number: element.art_number,
+                                    src: "../img/marker.svg",
+                                    x: element.art_x,
+                                    y: element.art_y,
+                                    size: 40,
+                                    dialog: {
+                                        value: element.nameArt,
+                                        style: {
+                                            color: "black"
+                                        }
+                                    },
+                                    hint: {
 
-                                },
-                                draggable: false
-                            });
+                                    },
+                                    draggable: false
+                                });
+                            }
                         });
                     }
                 });
@@ -130,15 +135,36 @@
         initImg($('#zoom-marker-img'));
 
         /******************** INIT ZoomMarker here *****************************/
-        $('#zoom-marker-img').zoomMarker({
-            src: "../img/0002.jpg",
-            rate: 0.2,
-            width: "50%",
-            height: "50%",
-            max: "100%",
-            markers: [
-                //{src:"../img/marker.svg", x:300, y:300}
-            ]
-        });
+        if (!UrlExists("../pic_buildings/" + $("#dep_id").val() + ".jpg")) {
+            $('#zoom-marker-img').zoomMarker({
+                src: "../img/emptyRoom.jpg",
+                rate: 0.2,
+                width: "50%",
+                height: "50%",
+                max: "100%",
+                markers: [
+                    //{src:"../img/marker.svg", x:300, y:300}
+                ]
+            });
+        } else {
+            $('#zoom-marker-img').zoomMarker({
+                src: "../pic_buildings/" + $("#dep_id").val() + ".jpg",
+                rate: 0.2,
+                width: "50%",
+                height: "50%",
+                max: "100%",
+                markers: [
+                    //{src:"../img/marker.svg", x:300, y:300}
+                ]
+            });
+        }
+
     })
+
+    function UrlExists(url) {
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.send();
+        return http.status != 404;
+    }
 </script>

@@ -41,7 +41,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>หมายเลขห้องปฏิบัติการ</label>
-                                            <input type="text" name="art_number" required class="form-control" placeholder="">
+                                            <input type="text" name="art_number" required class="form-control" placeholder="10-406">
                                         </div>
                                         <div class="form-group">
                                             <label>แผนก</label>
@@ -90,7 +90,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 border-left">
                                         <div class="form-group">
                                             <label>ชื่อห้องปฏิบัติการ</label>
                                             <input type="text" name="art_name" required class="form-control" placeholder="">

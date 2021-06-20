@@ -14,7 +14,7 @@ if (!empty($_REQUEST["insert"])) {
     $files = $_FILES["art_pic"];
     $file_ext = strtolower(end(explode('.', $files['name'])));
     $target_dir = "../pic_rooms/";
-    $file_name = $art_number . ".jpg";
+    $file_name = $art_number ."_".$people_dep_id. ".jpg";
     $target_file = $target_dir . basename($file_name);
     $res = array();
     if (!empty($files['name'])) {
@@ -70,7 +70,7 @@ if (!empty($_REQUEST["insert"])) {
     $files = $_FILES["art_pic"];
     $file_ext = strtolower(end(explode('.', $files['name'])));
     $target_dir = "../pic_rooms/";
-    $file_name = $art_number . ".jpg";
+    $file_name = $art_number ."_".$people_dep_id. ".jpg";
     $target_file = $target_dir . basename($file_name);
     $res = array();
     if (!empty($files['name'])) {
