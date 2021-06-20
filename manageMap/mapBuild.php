@@ -9,7 +9,7 @@
         header("location: ../index.php");
     }
     $sql = "select people_dep_id,people_dep_name from people_dep
-    where people_dep_id not in ('1','2','3','4','5','330','999','888','329') 
+    where people_dep_id in (select people_dep_id from map)  
     order by people_dep_name";
     $res = mysqli_query($conn, $sql);
 
@@ -45,17 +45,19 @@
                                 <div class="card-body">
                                     <form id="formLocation" action="" method="post">
                                         <div class="form-group">
-                                            <label>ชื่อสถานที่</label>
-                                            <select name="locationName" id="locationName" class="form-control" style="width: 100%">
-                                                <option value="">--- กรุณาเลือกสถานที่ ---</option>
+                                            <label>แผนก</label>
+                                            <select name="dep_id" id="dep_id" class="form-control" style="width: 100%">
+                                                <option value="">--- กรุณาเลือกแผนก ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>
                                                     <option value="<?php echo $row["people_dep_id"]; ?>"><?php echo $row["people_dep_name"]; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>รูปผังอาคาร</label>
-                                            <input type="file" class="form-control" name="picBuild" id="picBuild">
+                                            <label>ห้อง</label>
+                                            <select name="art_id" id="art_id" class="form-control" style="width: 100%">
+                                                <option value="">--- เลือกห้อง ---</option>
+                                            </select>
                                         </div>
                                     </form>
                                 </div>
@@ -65,13 +67,16 @@
                     </div>
                     <!-- End of Main Content -->
                 </div>
-                <!-- End of Content Wrapper -->
                 <!-- Footer -->
                 <?php require_once "../footer.php"; ?>
                 <!-- End of Footer -->
+
             </div>
-            <!-- End of Page Wrapper -->
+            <!-- End of Content Wrapper -->
+
         </div>
+        <!-- End of Page Wrapper -->
+
         <!-- Scroll to Top Button-->
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
@@ -84,7 +89,8 @@
 </html>
 <script>
     $(document).ready(function() {
-        $("#locationName").select2()
+        $("#art_id").select2()
+        $("#dep_id").select2()
         var picTag = 0;
         var tagNumber = 1;
 
@@ -93,8 +99,8 @@
             // handle "TAP" event and add marker to image
             item.on("zoom_marker_mouse_click", function(event, position) {
                 console.log("Mouse click on: " + JSON.stringify(position));
-                if ($("#locationName").val() == "") {
-                    $.bootstrapGrowl("กรุณาเลือกสถานที่", // Messages
+                if ($("#art_id").val() == "") {
+                    $.bootstrapGrowl("กรุณาเลือกห้อง", // Messages
                         { // options
                             type: "warning", // info, success, warning and danger
                             ele: "body", // parent container
@@ -110,9 +116,8 @@
                         });
                     return false
                 }
-
                 const marker = item.zoomMarker_AddMarker({
-                    id: $("#locationName").val(),
+                    id: $("#art_id").val(),
                     src: "../img/marker.svg",
                     x: position.x,
                     y: position.y,
@@ -133,7 +138,7 @@
                 });
                 // 手动配置dialog
                 marker.param.dialog = {
-                    value: "<h5 class='dlgPin'>" + $("#locationName option:selected").text() + "</h5>",
+                    value: "<h5 class='dlgPin'>" + $("#art_id option:selected").text() + "</h5>",
                     offsetX: 20,
                     style: {
                         //"border-color": "#111212"
@@ -143,68 +148,47 @@
                     }
                 };
                 // 画线
-                var fd = new FormData();
-                var files = $('#picBuild')[0].files;
-
-                // Check file selected or not
-                if (files.length > 0) {
-                    fd.append('picBuild', files[0]);
-                }
-                fd.append('dep_id', $("#locationName").val())
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/uploadBuilding.php",
-                    data: fd,
-                    contentType: false,
-                    processData: false,
+                    url: "../ajax/updateArt.php",
+                    data: {
+                        art_id: $("#art_id").val(),
+                        art_x: position.x,
+                        art_y: position.y,
+                    },
                     success: function(result) {
-                        let obj = JSON.parse(result)
-                        $.ajax({
-                            type: "POST",
-                            url: "../ajax/insertMap.php",
-                            data: {
-                                insertMap: true,
-                                people_dep_id: $("#locationName").val(),
-                                map_x: position.x,
-                                map_y: position.y,
-                                pic_build: obj.namePic
-                            },
-                            success: function(result) {
-                                if (result == "success") {
-                                    $('#formLocation').trigger("reset");
-                                    $("#locationName").val("").trigger('change')
-                                    $.bootstrapGrowl("เพิ่มข้อมูลสำเร็จ", // Messages
-                                        { // options
-                                            type: "success", // info, success, warning and danger
-                                            ele: "body", // parent container
-                                            offset: {
-                                                from: "top",
-                                                amount: 100,
-                                            },
-                                            align: "center", // right, left or center
-                                            width: "auto",
-                                            delay: 4000,
-                                            allow_dismiss: true, // add a close button to the message
-                                            // stackup_spacing: 10
-                                        });
-                                } else {
-                                    $.bootstrapGrowl("เพิ่มข้อมูลไม่สำเร็จ", // Messages
-                                        { // options
-                                            type: "danger", // info, success, warning and danger
-                                            ele: "body", // parent container
-                                            offset: {
-                                                from: "top",
-                                                amount: 100,
-                                            },
-                                            align: "center", // right, left or center
-                                            width: "auto",
-                                            delay: 4000,
-                                            allow_dismiss: true, // add a close button to the message
-                                            // stackup_spacing: 10
-                                        });
-                                }
-                            }
-                        });
+                        if (result == "success") {
+                            // $("#art_id").val("").trigger('change')
+                            $.bootstrapGrowl("บันทึกข้อมูลสำเร็จ", // Messages
+                                { // options
+                                    type: "success", // info, success, warning and danger
+                                    ele: "body", // parent container
+                                    offset: {
+                                        from: "top",
+                                        amount: 100,
+                                    },
+                                    align: "center", // right, left or center
+                                    width: "auto",
+                                    delay: 4000,
+                                    allow_dismiss: true, // add a close button to the message
+                                    // stackup_spacing: 10
+                                });
+                        } else {
+                            $.bootstrapGrowl("บันทึกข้อมูลไม่สำเร็จ", // Messages
+                                { // options
+                                    type: "danger", // info, success, warning and danger
+                                    ele: "body", // parent container
+                                    offset: {
+                                        from: "top",
+                                        amount: 100,
+                                    },
+                                    align: "center", // right, left or center
+                                    width: "auto",
+                                    delay: 4000,
+                                    allow_dismiss: true, // add a close button to the message
+                                    // stackup_spacing: 10
+                                });
+                        }
                     }
                 });
                 const context = item.zoomMarker_Canvas();
@@ -224,22 +208,36 @@
             item.on("zoom_marker_click", function(event, marker) {
                 $.confirm({
                     title: 'delete',
-                    content: 'คุณต้องการลบสถานที่ ?',
+                    content: 'คุณต้องการลบตำแหน่งห้อง ?',
                     buttons: {
                         confirm: function() {
                             $.ajax({
                                 type: "POST",
-                                url: "../ajax/deleteMap.php",
+                                url: "../ajax/updateArt.php",
                                 data: {
-                                    delMap: true,
-                                    people_dep_id: marker.param.id,
+                                    art_id: $("#art_id").val(),
+                                    art_x: 0,
+                                    art_y: 0,
                                 },
                                 success: function(result) {
                                     if (result == "success") {
-                                        $(".zoom-marker-hover-dialog").hide()
-                                        $('#zoom-marker-img').zoomMarker_RemoveMarker(marker.id);
+                                        // $("#art_id").val("").trigger('change')
+                                        $.bootstrapGrowl("บันทึกข้อมูลสำเร็จ", // Messages
+                                            { // options
+                                                type: "success", // info, success, warning and danger
+                                                ele: "body", // parent container
+                                                offset: {
+                                                    from: "top",
+                                                    amount: 100,
+                                                },
+                                                align: "center", // right, left or center
+                                                width: "auto",
+                                                delay: 4000,
+                                                allow_dismiss: true, // add a close button to the message
+                                                // stackup_spacing: 10
+                                            });
                                     } else {
-                                        $.bootstrapGrowl("ลบไม่สำรเร็จ", // Messages
+                                        $.bootstrapGrowl("บันทึกข้อมูลไม่สำเร็จ", // Messages
                                             { // options
                                                 type: "danger", // info, success, warning and danger
                                                 ele: "body", // parent container
@@ -281,51 +279,53 @@
                 setTimeout(function() {
                     EasyLoading.hide();
                 }, 2000);
+
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/getMap.php",
+                    url: "../ajax/getMapBuild.php",
                     data: {
-                        getMap: true,
+                        dep_id: $("#dep_id").val()
                     },
                     success: function(result) {
                         let obj = JSON.parse(result)
                         obj.forEach(element => {
-                            item.zoomMarker_AddMarker({
-                                id: element.people_dep_id,
-                                src: "../img/marker.svg",
-                                x: element.map_x,
-                                y: element.map_y,
-                                size: 30,
-                                dialog: {
-                                    value: element.people_dep_name,
-                                    style: {
-                                        color: "black"
-                                    }
-                                },
-                                hint: {
+                            if (element.art_x > 0 && element.art_y > 0) {
+                                item.zoomMarker_AddMarker({
+                                    id: element.art_id,
+                                    src: "../img/marker.svg",
+                                    x: element.art_x,
+                                    y: element.art_y,
+                                    size: 30,
+                                    dialog: {
+                                        value: element.nameArt,
+                                        style: {
+                                            color: "black"
+                                        }
+                                    },
+                                    hint: {
 
-                                }
-                            });
+                                    }
+                                });
+                            }
+
                         });
                     }
                 });
-
             });
 
             // message after at the end of Maker moving action
             item.on("zoom_marker_move_end", function(event, position) {
                 $.ajax({
                     type: "POST",
-                    url: "../ajax/updateMap.php",
+                    url: "../ajax/updateArt.php",
                     data: {
-                        editMap: true,
-                        people_dep_id: position.markerObj.param.id,
-                        map_x: position.x,
-                        map_y: position.y
+                        art_id: $("#art_id").val(),
+                        art_x: position.x,
+                        art_y: position.y,
                     },
                     success: function(result) {
                         if (result == "success") {
-                            $.bootstrapGrowl("แก้ไขข้อมูลสำเร็จ", // Messages
+                            $.bootstrapGrowl("บันทึกข้อมูลสำเร็จ", // Messages
                                 { // options
                                     type: "success", // info, success, warning and danger
                                     ele: "body", // parent container
@@ -340,7 +340,7 @@
                                     // stackup_spacing: 10
                                 });
                         } else {
-                            $.bootstrapGrowl("แก้ไขข้อมูลไม่สำเร็จ", // Messages
+                            $.bootstrapGrowl("บันทึกข้อมูลไม่สำเร็จ", // Messages
                                 { // options
                                     type: "danger", // info, success, warning and danger
                                     ele: "body", // parent container
@@ -357,15 +357,42 @@
                         }
                     }
                 });
-                console.log(position.markerObj.param.id);
             })
         }
+        $("#dep_id").change(function() {
+            $.ajax({
+                type: 'POST',
+                url: "../ajax/getBuild.php",
+                data: {
+                    dep_id: $("#dep_id").val()
+                },
+                success: function(response) {
+                    let obj = JSON.parse(response)
+                    $("#art_id").empty();
+                    $("#art_id").append('<option value="">--- เลือกห้อง ---</option>')
+                    $.each(obj, function(index, value) {
+                        $("#art_id").append("<option value='" + value.art_id + "' > " +
+                            value.nameArt + "</option>")
+                    });
 
+                    $("#art_id").select2({
+                        width: '100%'
+                    });
+                },
+            });
+            $('#zoom-marker-img').zoomMarker_CleanMarker();
+            $('#zoom-marker-img').zoomMarker_CanvasClean();
+            if ($("#dep_id").val() == "") {
+                $('#zoom-marker-img').zoomMarker_LoadImage("../img/notBuild.jpg");
+            } else {
+                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_buildings/" + $("#dep_id").val() + ".jpg");
+            }
+        })
         initImg($('#zoom-marker-img'));
 
         /******************** INIT ZoomMarker here *****************************/
         $('#zoom-marker-img').zoomMarker({
-            src: "../img/0002.jpg",
+            src: "../img/notBuild.jpg",
             rate: 0.2,
             width: "100%",
             height: "100%",
@@ -375,5 +402,6 @@
             ]
         });
         /******************** INIT ZoomMarker here *****************************/
+
     })
 </script>

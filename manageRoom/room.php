@@ -8,7 +8,8 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select * from articles";
+    $sql = "select ar.*,pd.people_dep_name from articles ar, people_dep pd 
+    where pd.people_dep_id = ar.dep_id";
     $result = mysqli_query($conn, $sql);
     ?>
 </head>
@@ -58,9 +59,9 @@
                                                         <td><?php echo $row["art_name"] ?></td>
                                                         <td><?php echo $row["art_com"] ?></td>
                                                         <td><?php echo $row["art_instruction"] ?></td>
-                                                        <td><?php echo $row["dep_id"] ?></td>
-                                                        <td><button class="btn btn-warning"><a href="formEditArt.php?art_id=<?php echo $row["art_id"] ?>"><i class="icon-color fa fa-pencil-square"></i></a></button></td>
-                                                        <td><button class="btn btn-danger"><a href="sqlArticles.php?art_id=<?php echo $row["art_id"] ?>&delArt=true"><i class="icon-color fa fa-trash"></i></a></button></td>
+                                                        <td><?php echo $row["people_dep_name"] ?></td>
+                                                        <td><a href="formEditArticles.php?art_number=<?php echo $row["art_number"]; ?>&dep_id=<?php echo $row["dep_id"] ?>"><button class="btn btn-warning"><i class="fas fa-edit"></i></button></a></td>
+                                                        <td><button class="btn btn-danger delArt" dep_id="<?php echo $row["dep_id"] ?>" art_number="<?php echo $row["art_number"] ?>"><i class="icon-color fa fa-trash"></i></button></td>
                                                     </tr>
                                             <?php
                                                 }
@@ -98,5 +99,26 @@
 <script>
     $(document).ready(function() {
         $("#artTable").DataTable()
+        $(".delArt").click(function() {
+            let dep_id = $(this).attr("dep_id")
+            let art_number = $(this).attr("art_number")
+            $.confirm({
+                title: 'delete',
+                content: 'คุณต้องการลบห้อง ?',
+                buttons: {
+                    confirm: function() {
+                        $.redirect("sqlArticles.php", {
+                            dep_id: dep_id,
+                            art_number: art_number,
+                            delArt: true
+                        });
+                    },
+                    cancel: function() {
+
+                    },
+                }
+            });
+        })
+
     })
 </script>
