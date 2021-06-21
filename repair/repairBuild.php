@@ -10,6 +10,7 @@
     ?>
 </head>
 <input type="hidden" id="dep_id" value="<?php echo $_REQUEST["dep_id"]; ?>">
+<input type="hidden" id="level" value="<?php echo $_REQUEST["level"]; ?>">
 
 <body id="page-top">
 
@@ -70,7 +71,7 @@
             // listen to marker click event, print to console and delete the marker
             item.on("zoom_marker_click", function(event, marker) {
                 $.redirect("repairRoom.php", {
-                    art_number: marker.param.art_number+"",
+                    art_number: marker.param.art_number + "",
                     dep_id: $("#dep_id").val()
                 });
             });
@@ -97,6 +98,7 @@
                     url: "../ajax/getMapBuild.php",
                     data: {
                         dep_id: $("#dep_id").val(),
+                        level: $("#level").val()
                     },
                     success: function(result) {
                         let obj = JSON.parse(result)
@@ -135,7 +137,7 @@
         initImg($('#zoom-marker-img'));
 
         /******************** INIT ZoomMarker here *****************************/
-        if (!UrlExists("../pic_buildings/" + $("#dep_id").val() + ".jpg")) {
+        if (!UrlExists("../pic_buildings/" + $("#dep_id").val() + "_" + $("#level").val() + ".jpg")) {
             $('#zoom-marker-img').zoomMarker({
                 src: "../img/emptyRoom.jpg",
                 rate: 0.2,
@@ -148,7 +150,7 @@
             });
         } else {
             $('#zoom-marker-img').zoomMarker({
-                src: "../pic_buildings/" + $("#dep_id").val() + ".jpg",
+                src: "../pic_buildings/" + $("#dep_id").val() + "_" + $("#level").val() + ".jpg",
                 rate: 0.2,
                 width: "50%",
                 height: "50%",

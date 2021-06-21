@@ -54,12 +54,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>จำนวนที่นั่ง</label>
-                                            <select class="custom-select" id="inputGroupSelect01" name="art_amount" required>
-                                                <option value="" selected>-เลือกข้อมูล-</option>
-                                                <option value="20">20</option>
-                                                <option value="30">30</option>
-                                                <option value="40">40</option>
-                                            </select>
+                                            <input class="custom-select" id="art_amount" name="art_amount" required>
                                         </div>
                                         <div class="form-group">
                                             <label>อุปกรณ์สื่อการสอน</label>
@@ -97,13 +92,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>จำนวนเครื่องคอมพิวเตอร์</label>
-                                            <select class="custom-select" name="art_com" required>
-                                                <option selected>-เลือกข้อมูล-</option>
-                                                <option value="10">10</option>
-                                                <option value="20">20</option>
-                                                <option value="30">30</option>
-                                                <option value="40">40</option>
-                                            </select>
+                                            <input class="custom-select" name="art_com" required>
                                         </div>
                                         <div class="form-group">
                                             <label>ประเภทครุภัณฑ์</label>

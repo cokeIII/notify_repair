@@ -8,7 +8,7 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select art_number,art_name,dep_id from articles";
+    $sql = "select art_number,art_name,dep_id,art_pic from articles";
     $res = mysqli_query($conn, $sql);
 
     ?>
@@ -47,7 +47,7 @@
                                             <select name="art_number" id="art_number" class="form-control" style="width: 100%">
                                                 <option value="">--- กรุณาเลือกห้อง ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>
-                                                    <option dep_id="<?php echo $row["dep_id"]; ?>" value="<?php echo $row["art_number"]; ?>"><?php echo $row["art_number"] . ' ' . $row["art_name"]; ?></option>
+                                                    <option pic="<?php echo $row["art_pic"]; ?>" dep_id="<?php echo $row["dep_id"]; ?>" value="<?php echo $row["art_number"]; ?>"><?php echo $row["art_number"] . ' ' . $row["art_name"]; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -320,7 +320,7 @@
                     type: "POST",
                     url: "../ajax/updateEqu.php",
                     data: {
-                        equ_number: $("#equ_number").val(),
+                        equ_number: position.markerObj.param.id,
                         equ_x: position.x,
                         equ_y: position.y,
                     },
@@ -385,10 +385,10 @@
             $('#zoom-marker-img').zoomMarker_CleanMarker();
             // $('#zoom-marker-img').zoomMarker_CanvasClean();
             // $('#zoom-marker-img').zoomMarker_EnableDrag(false);
-            if (!UrlExists("../pic_rooms/" + $("#art_number").val() + '_' + $("#art_number option:selected").attr("dep_id") + ".jpg")) {
+            if ($("#art_number option:selected").attr("pic") == "") {
                 $('#zoom-marker-img').zoomMarker_LoadImage("../img/notBuild.jpg");
             } else {
-                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_rooms/" + $("#art_number").val() + '_' + $("#art_number option:selected").attr("dep_id") + ".jpg");
+                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_rooms/" + $("#art_number option:selected").attr("pic"));
             }
         })
         initImg($('#zoom-marker-img'));

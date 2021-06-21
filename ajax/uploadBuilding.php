@@ -1,9 +1,10 @@
 <?php
 error_reporting( error_reporting() & ~E_NOTICE );
 $files = $_FILES["picBuild"];
+$level = $_REQUEST["level"];
 $file_ext = strtolower(end(explode('.', $files['name'])));
 $target_dir = "../pic_buildings/";
-$file_name = $_POST["dep_id"] . ".jpg";
+$file_name = $_POST["dep_id"] ."_".$level. ".jpg";
 $target_file = $target_dir . basename($file_name);
 $res = array();
 if (!empty($files['name'])) {

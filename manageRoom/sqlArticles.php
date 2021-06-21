@@ -14,15 +14,14 @@ if (!empty($_REQUEST["insert"])) {
     $files = $_FILES["art_pic"];
     $file_ext = strtolower(end(explode('.', $files['name'])));
     $target_dir = "../pic_rooms/";
-    $file_name = $art_number ."_".$people_dep_id. ".jpg";
+    $file_name = $art_number . "_" . $people_dep_id . ".jpg";
     $target_file = $target_dir . basename($file_name);
     $res = array();
     if (!empty($files['name'])) {
         if (is_image($files["tmp_name"]) === true) {
             move_uploaded_file($files["tmp_name"], $target_file);
         }
-    }
-    $sql = "insert into articles 
+        $sql = "insert into articles 
             (
             art_number,
             art_name,
@@ -42,6 +41,27 @@ if (!empty($_REQUEST["insert"])) {
                 '$people_dep_id',
                 '$file_name'
             )";
+    } else {
+        $sql = "insert into articles 
+        (
+        art_number,
+        art_name,
+        art_amount,
+        art_com,
+        art_instruction,
+        art_type,
+        dep_id
+         ) values(
+            '$art_number',
+            '$art_name',
+            '$art_amount',
+            '$art_com',
+            '$json_art_instruction',
+            '$art_type',
+            '$people_dep_id'
+        )";
+    }
+
     $result = $conn->query($sql);
     if ($result) {
         header("location: room.php");
@@ -70,7 +90,7 @@ if (!empty($_REQUEST["insert"])) {
     $files = $_FILES["art_pic"];
     $file_ext = strtolower(end(explode('.', $files['name'])));
     $target_dir = "../pic_rooms/";
-    $file_name = $art_number ."_".$people_dep_id. ".jpg";
+    $file_name = $art_number . "_" . $people_dep_id . ".jpg";
     $target_file = $target_dir . basename($file_name);
     $res = array();
     if (!empty($files['name'])) {

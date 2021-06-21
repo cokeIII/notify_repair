@@ -59,12 +59,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label>จำนวนที่นั่ง</label>
-                                            <select class="custom-select" id="inputGroupSelect01" name="art_amount" required>
-                                                <option value="" selected>-เลือกข้อมูล-</option>
-                                                <option value="20" <?php echo ($rowArt["art_amount"] == '20' ? 'selected' : '') ?>>20</option>
-                                                <option value="30" <?php echo ($rowArt["art_amount"] == '30' ? 'selected' : '') ?>>30</option>
-                                                <option value="40" <?php echo ($rowArt["art_amount"] == '40' ? 'selected' : '') ?>>40</option>
-                                            </select>
+                                            <input class="custom-select" id="art_amount" name="art_amount" value="<?php echo $rowArt["art_amount"]; ?>" required>
+
                                         </div>
                                         <?php
                                         $arrArt = explode(',', $rowArt["art_instruction"]);
@@ -109,13 +105,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>จำนวนเครื่องคอมพิวเตอร์</label>
-                                            <select class="custom-select" name="art_com" required>
-                                                <option selected>-เลือกข้อมูล-</option>
-                                                <option value="10" <?php echo ($rowArt["art_com"] == '10' ? 'selected' : '') ?>>10</option>
-                                                <option value="20" <?php echo ($rowArt["art_com"] == '20' ? 'selected' : '') ?>>20</option>
-                                                <option value="30" <?php echo ($rowArt["art_com"] == '30' ? 'selected' : '') ?>>30</option>
-                                                <option value="40" <?php echo ($rowArt["art_com"] == '40' ? 'selected' : '') ?>>40</option>
-                                            </select>
+                                            <input class="custom-select" name="art_com" value="<?php echo $rowArt["art_com"]; ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>ประเภทครุภัณฑ์</label>

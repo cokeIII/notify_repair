@@ -8,8 +8,8 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select people_dep_id,people_dep_name from people_dep
-    where people_dep_id in (select people_dep_id from map)  
+    $sql = "select m.*,pd.people_dep_name from map m,people_dep pd
+    where m.people_dep_id = pd.people_dep_id
     order by people_dep_name";
     $res = mysqli_query($conn, $sql);
 
@@ -49,7 +49,7 @@
                                             <select name="dep_id" id="dep_id" class="form-control" style="width: 100%">
                                                 <option value="">--- กรุณาเลือกแผนก ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>
-                                                    <option value="<?php echo $row["people_dep_id"]; ?>"><?php echo $row["people_dep_name"]; ?></option>
+                                                    <option value="<?php echo $row["people_dep_id"]; ?>" depLevel="<?php echo $row["level"]; ?>" pic="<?php echo $row["pic_build"]; ?>"><?php echo "ชั้น" . $row["level"] . "-" . $row["people_dep_name"]; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -154,6 +154,7 @@
                     url: "../ajax/updateArt.php",
                     data: {
                         art_id: $("#art_id").val(),
+                        level: $("#dep_id option:selected").attr("depLevel"),
                         art_x: position.x,
                         art_y: position.y,
                     },
@@ -219,6 +220,7 @@
                                     art_id: marker.param.id,
                                     art_x: 0,
                                     art_y: 0,
+                                    level: 0,
                                 },
                                 success: function(result) {
                                     if (result == "success") {
@@ -287,12 +289,13 @@
                     type: "POST",
                     url: "../ajax/getMapBuild.php",
                     data: {
-                        dep_id: $("#dep_id").val()
+                        dep_id: $("#dep_id").val(),
+                        level: $("#dep_id option:selected").attr("depLevel"),
                     },
                     success: function(result) {
                         let obj = JSON.parse(result)
                         obj.forEach(element => {
-                            if (element.art_x > 0 && element.art_y > 0) {
+                            if (element.art_x > 0 && element.art_y > 0 && element.level > 0) {
                                 item.zoomMarker_AddMarker({
                                     id: element.art_id,
                                     src: "../img/marker.svg",
@@ -322,7 +325,8 @@
                     type: "POST",
                     url: "../ajax/updateArt.php",
                     data: {
-                        art_id: $("#art_id").val(),
+                        art_id: position.markerObj.param.id,
+                        level: $("#dep_id option:selected").attr("depLevel"),
                         art_x: position.x,
                         art_y: position.y,
                     },
@@ -386,10 +390,11 @@
             $('#zoom-marker-img').zoomMarker_CleanMarker();
             // $('#zoom-marker-img').zoomMarker_CanvasClean();
             // $('#zoom-marker-img').zoomMarker_EnableDrag(false);
-            if (!UrlExists("../pic_buildings/" + $("#dep_id").val() + ".jpg")) {
+            if ($("#dep_id option:selected").attr("pic") == "") {
                 $('#zoom-marker-img').zoomMarker_LoadImage("../img/notBuild.jpg");
             } else {
-                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_buildings/" + $("#dep_id").val() + ".jpg");
+                console.log("NO PIC")
+                $('#zoom-marker-img').zoomMarker_LoadImage("../pic_buildings/" + $("#dep_id option:selected").attr("pic"));
             }
         })
         initImg($('#zoom-marker-img'));

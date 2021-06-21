@@ -67,8 +67,20 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label >รายละเอียดอาการความเสียหาย</label>
-                            <textarea name="repair_des" id="" class="form-control" cols="30" rows="5"></textarea>
+                            <label>หมายเลข</label>
+                            <input type="text" name="equ_number" class="form-control" id="equ_number" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>ชื่อ</label>
+                            <input type="text" name="equ_name" class="form-control" id="equ_name" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>รายละเอียดอุปกรณ์</label>
+                            <textarea name="equ_description" id="equ_description" class="form-control" cols="30" rows="5" readonly></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>รายละเอียดอาการความเสียหาย</label>
+                            <textarea name="repair_des" id="" class="form-control" cols="30" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
@@ -97,7 +109,10 @@
 
             // listen to marker click event, print to console and delete the marker
             item.on("zoom_marker_click", function(event, marker) {
-                $('#repairEqu').modal('show');
+                $("#equ_number").val(marker.param.id)
+                $("#equ_name").val(marker.param.equ_name)
+                $("#equ_description").val(marker.param.equ_description)
+                $('#repairEqu').modal('show')
             });
 
             // message for the beginning of image loading process
@@ -128,6 +143,8 @@
                         obj.forEach(element => {
                             item.zoomMarker_AddMarker({
                                 id: element.equ_number,
+                                equ_name: element.equ_name,
+                                equ_description: element.equ_description,
                                 src: "../img/marker.svg",
                                 x: element.equ_x,
                                 y: element.equ_y,

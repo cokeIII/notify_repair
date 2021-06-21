@@ -51,6 +51,37 @@
         <i class="fas fa-angle-up"></i>
     </a>
 </body>
+<!-- Modal -->
+<div class="modal fade layer-9999" id="selectLevel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">เลือกชั้นอาคาร</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>หมายเลขชั้น</label>
+                            <select name="level" id="level" class="form-control">
+
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="sendLevel">ไปยังชั้นที่เลือก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php require_once "../setFoot.php"; ?>
 
 </html>
@@ -65,14 +96,34 @@
             item.on("zoom_marker_mouse_click", function(event, position) {
                 console.log("Mouse click on: " + JSON.stringify(position));
             });
-
+            let markerId = null
             // listen to marker click event, print to console and delete the marker
             item.on("zoom_marker_click", function(event, marker) {
-                $.redirect("repairBuild.php", {
-                    dep_id: marker.param.id,
+                markerId = marker.param.id
+                $.ajax({
+                    type: "POST",
+                    url: "../ajax/getLevel.php",
+                    data: {
+                        dep_id: marker.param.id,
+                    },
+                    success: function(result) {
+                        let obj = JSON.parse(result)
+                        $("#level").empty();
+                        $.each(obj, function(index, value) {
+                            $("#level").append("<option value='" + value.level + "' > " +
+                                value.level + "</option>")
+                        });
+                        $('#selectLevel').modal('show')
+
+                    }
                 });
             });
-
+            $("#sendLevel").click(function() {
+                $.redirect("repairBuild.php", {
+                    dep_id: markerId,
+                    level: $("#level").val()
+                });
+            })
             // message for the beginning of image loading process
             item.on("zoom_marker_img_load", function(event, src) {
                 console.log("loading started for image : " + src);

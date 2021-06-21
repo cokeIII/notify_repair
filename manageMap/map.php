@@ -53,10 +53,11 @@
                                                 <?php } ?>
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label>รูปผังอาคาร</label>
-                                            <input type="file" class="form-control" name="picBuild" id="picBuild">
+                                        <div class="form-group" id="displayPic">
+                                            <label>รูปผังอาคาร ชั้น 1</label>
+                                            <input type="file" class="form-control mb-3" name="picBuild[]" id="picBuild1">
                                         </div>
+                                        <button type="button" class="btn btn-primary" id="plusPic"><i class="fas fa-plus-square"></i> เพิ่มรูปผังอาคาร</button>
                                     </form>
                                 </div>
                             </div>
@@ -84,6 +85,13 @@
 </html>
 <script>
     $(document).ready(function() {
+        let level = 1;
+        $("#plusPic").click(function() {
+            $("#displayPic").append('<div class="form-group" id="displayPic">' +
+                '<label>รูปผังอาคาร ชั้น ' + (++level) + '</label>' +
+                '<input type="file" class="form-control" name="picBuild[]" id="picBuild' + (level) + '">' +
+                '</div>')
+        })
         $("#locationName").select2()
         var picTag = 0;
         var tagNumber = 1;
@@ -143,22 +151,74 @@
                     }
                 };
                 // 画线
-                var fd = new FormData();
-                var files = $('#picBuild')[0].files;
+                $("#displayPic").find("input[type=file]").each(function(i) {
+                    i++
+                    var fd = new FormData();
+                    var files = $(this)[0].files;
+                    // Check file selected or not
+                    if (files.length > 0) {
+                        fd.append('picBuild', files[0]);
 
-                // Check file selected or not
-                if (files.length > 0) {
-                    fd.append('picBuild', files[0]);
-                }
-                fd.append('dep_id', $("#locationName").val())
-                $.ajax({
-                    type: "POST",
-                    url: "../ajax/uploadBuilding.php",
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    success: function(result) {
-                        let obj = JSON.parse(result)
+                        fd.append('dep_id', $("#locationName").val())
+                        fd.append('level', i)
+                        $.ajax({
+                            type: "POST",
+                            url: "../ajax/uploadBuilding.php",
+                            data: fd,
+                            contentType: false,
+                            processData: false,
+                            success: function(result) {
+                                let obj = JSON.parse(result)
+                                $.ajax({
+                                    type: "POST",
+                                    url: "../ajax/insertMap.php",
+                                    data: {
+                                        insertMap: true,
+                                        people_dep_id: $("#locationName").val(),
+                                        map_x: position.x,
+                                        map_y: position.y,
+                                        pic_build: obj.namePic,
+                                        level: i
+                                    },
+                                    success: function(result) {
+                                        if (result == "success") {
+                                            $('#formLocation').trigger("reset");
+                                            $("#locationName").val("").trigger('change')
+                                            $.bootstrapGrowl("เพิ่มข้อมูลสำเร็จ", // Messages
+                                                { // options
+                                                    type: "success", // info, success, warning and danger
+                                                    ele: "body", // parent container
+                                                    offset: {
+                                                        from: "top",
+                                                        amount: 100,
+                                                    },
+                                                    align: "center", // right, left or center
+                                                    width: "auto",
+                                                    delay: 4000,
+                                                    allow_dismiss: true, // add a close button to the message
+                                                    // stackup_spacing: 10
+                                                });
+                                        } else {
+                                            $.bootstrapGrowl("เพิ่มข้อมูลไม่สำเร็จ", // Messages
+                                                { // options
+                                                    type: "danger", // info, success, warning and danger
+                                                    ele: "body", // parent container
+                                                    offset: {
+                                                        from: "top",
+                                                        amount: 100,
+                                                    },
+                                                    align: "center", // right, left or center
+                                                    width: "auto",
+                                                    delay: 4000,
+                                                    allow_dismiss: true, // add a close button to the message
+                                                    // stackup_spacing: 10
+                                                });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    } else {
                         $.ajax({
                             type: "POST",
                             url: "../ajax/insertMap.php",
@@ -167,7 +227,8 @@
                                 people_dep_id: $("#locationName").val(),
                                 map_x: position.x,
                                 map_y: position.y,
-                                pic_build: obj.namePic
+                                pic_build: "",
+                                level: i
                             },
                             success: function(result) {
                                 if (result == "success") {
@@ -206,7 +267,8 @@
                             }
                         });
                     }
-                });
+                })
+
                 const context = item.zoomMarker_Canvas();
                 if (context !== null) {
                     context.strokeStyle = 'black';
