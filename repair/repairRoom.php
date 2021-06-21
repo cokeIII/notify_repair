@@ -71,8 +71,16 @@
                             <input type="text" name="equ_number" class="form-control" id="equ_number" readonly>
                         </div>
                         <div class="form-group">
-                            <label>ชื่อ</label>
-                            <input type="text" name="equ_name" class="form-control" id="equ_name" readonly>
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <label>ชื่อ</label>
+                                    <input type="text" name="equ_name" class="form-control" id="equ_name" readonly>
+                                </div>
+                                <div class="col-md-5">
+                                    <label>สถานะ</label>
+                                    <input type="text" name="equ_status" class="form-control" id="equ_status" readonly>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>รายละเอียดอุปกรณ์</label>
@@ -80,14 +88,14 @@
                         </div>
                         <div class="form-group">
                             <label>รายละเอียดอาการความเสียหาย</label>
-                            <textarea name="repair_des" id="" class="form-control" cols="30" rows="3"></textarea>
+                            <textarea name="repair_des" id="repair_des" class="form-control" cols="30" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">ส่งข้อมูล</button>
+                <button type="button" class="btn btn-primary" id="sendRepair">ส่งข้อมูล</button>
             </div>
         </div>
     </div>
@@ -97,6 +105,52 @@
 </html>
 <script>
     $(document).ready(function() {
+        $("#sendRepair").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "../ajax/sqlRepair.php",
+                data: {
+                    insert: true,
+                    equ_number: $("#equ_number").val(),
+                    rep_description: $("#repair_des").val(),
+                    equ_status: $("#equ_status").val()
+                },
+                success: function(result) {
+                    if (result == "success") {
+                        $('#repairEqu').modal('hide')
+                        $.bootstrapGrowl("ส่งรายการเรียบร้อย", // Messages
+                            { // options
+                                type: "success", // info, success, warning and danger
+                                ele: "body", // parent container
+                                offset: {
+                                    from: "top",
+                                    amount: 100,
+                                },
+                                align: "center", // right, left or center
+                                width: "auto",
+                                delay: 4000,
+                                allow_dismiss: true, // add a close button to the message
+                                // stackup_spacing: 10
+                            });
+                    } else {
+                        $.bootstrapGrowl("ส่งรายการไม่สำเร็จ", // Messages
+                            { // options
+                                type: "warning", // info, success, warning and danger
+                                ele: "body", // parent container
+                                offset: {
+                                    from: "top",
+                                    amount: 100,
+                                },
+                                align: "center", // right, left or center
+                                width: "auto",
+                                delay: 4000,
+                                allow_dismiss: true, // add a close button to the message
+                                // stackup_spacing: 10
+                            });
+                    }
+                }
+            });
+        })
         var picTag = 0;
         var tagNumber = 1;
 
@@ -111,6 +165,7 @@
             item.on("zoom_marker_click", function(event, marker) {
                 $("#equ_number").val(marker.param.id)
                 $("#equ_name").val(marker.param.equ_name)
+                $("#equ_status").val(marker.param.equ_status)
                 $("#equ_description").val(marker.param.equ_description)
                 $('#repairEqu').modal('show')
             });
@@ -145,6 +200,7 @@
                                 id: element.equ_number,
                                 equ_name: element.equ_name,
                                 equ_description: element.equ_description,
+                                equ_status: element.equ_status,
                                 src: "../img/marker.svg",
                                 x: element.equ_x,
                                 y: element.equ_y,

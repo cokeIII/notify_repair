@@ -11,7 +11,7 @@ $url .= $_SERVER['HTTP_HOST'];
 $url .= "/notifyRepair";
 ?>
 <!-- Bootstrap core JavaScript-->
-<script src="<?php echo $url.'/js/jquery-3.3.1.min.js';?>"></script>
+<script src="<?php echo $url.'/js/jquery-3.5.1.js';?>"></script>
 <!-- <script src="<?php //echo $url.'/vendor/jquery/jquery.min.js';?>"></script> -->
 <script src="<?php echo $url.'/vendor/bootstrap/js/bootstrap.bundle.min.js';?>"></script>
 

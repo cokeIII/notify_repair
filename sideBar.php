@@ -49,6 +49,11 @@ if (!empty($_SESSION["people_id"])) {
                 <span>แจ้งซ่อม</span></a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="<?php echo $url . '/repair/listRepair.php'; ?>">
+                <i class="fas fa-clipboard-list"></i>
+                <span>รายการแจ้งซ่อม</span></a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-map-marked-alt"></i>
                 <span>จัดการแผนที่</span>
