@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?php require_once "setHead.php";?>
+    <?php require_once "setHead.php"; ?>
 </head>
 
 <body id="page-top">
@@ -31,7 +31,12 @@
 
                     <!-- Content Row -->
                     <div class="row">
-
+                        <?php
+                        require_once "connect.php";
+                        $sqlEqu = "select count(equ_number) as equCount from equipment";
+                        $resEqu = mysqli_query($conn, $sqlEqu);
+                        $rowEqu = mysqli_fetch_array($resEqu);
+                        ?>
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-md-4 mt-2">
                             <div class="card border-left-primary shadow h-100 py-2">
@@ -40,7 +45,7 @@
                                         <div class="col mr-2">
                                             <div class=" font-weight-bold text-primary text-uppercase mb-1">
                                                 อุกรณ์ทั้งหมด</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">480</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $rowEqu["equCount"] ?></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-desktop fa-2x text-gray-300"></i>
@@ -49,7 +54,11 @@
                                 </div>
                             </div>
                         </div>
-
+                        <?php
+                        $sqlEquRD = "select count(equ_number) as equCount from equipment where equ_status = 'ปกติ'";
+                        $resEquRD = mysqli_query($conn, $sqlEquRD);
+                        $rowEquRD = mysqli_fetch_array($resEquRD);
+                        ?>
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-md-4 mt-2">
                             <div class="card border-left-success shadow h-100 py-2">
@@ -58,7 +67,7 @@
                                         <div class="col mr-2">
                                             <div class="font-weight-bold text-success text-uppercase mb-1">
                                                 อุปกรณ์ที่ใช้งานได้</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">470</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $rowEquRD["equCount"]; ?></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-desktop fa-2x text-gray-300 opacity-2"></i>
@@ -67,7 +76,11 @@
                                 </div>
                             </div>
                         </div>
-
+                        <?php
+                        $sqlEquRep = "select count(equ_number) as equCount from equipment where equ_status = 'รายการส่งซ่อม'";
+                        $resEquRep = mysqli_query($conn, $sqlEquRep);
+                        $rowEquRep = mysqli_fetch_array($resEquRep);
+                        ?>
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-md-4 mt-2">
                             <div class="card border-left-danger shadow h-100 py-2">
@@ -78,7 +91,7 @@
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">10</div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $rowEquRep["equCount"];?></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -149,7 +162,8 @@
         <i class="fas fa-angle-up"></i>
     </a>
 </body>
-<?php require_once "setFoot.php";?>
+<?php require_once "setFoot.php"; ?>
+
 </html>
 <script>
     $(document).ready(function() {

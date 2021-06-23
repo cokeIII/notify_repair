@@ -28,7 +28,7 @@ if (!empty($_REQUEST["insert"])) {
             '$dates'
         )
     ";
-        $sqlEqu = "update equipment set equ_status = 'รายการส่งซ่อม'";
+        $sqlEqu = "update equipment set equ_status = 'รายการส่งซ่อม' where equ_number = '$equ_number'";
 
         $resEqu = mysqli_query($conn, $sqlEqu);
         $res = mysqli_query($conn, $sql);
