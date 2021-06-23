@@ -9,12 +9,17 @@
         header("location: ../index.php");
     }
     $people_id = $_SESSION["people_id"];
-    if ($_SESSION["people_status"] == "staff") {
-        $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number";
-    } else if ($_SESSION["people_status"] == "user") {
-        $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number and people_id = '$people_id'";
+    if (!empty($_REQUEST["rep_id"])) {
+        $rep_id = $_REQUEST["rep_id"];
+        $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number and rep.rep_id = '$rep_id'";
     } else {
-        $sql = "";
+        if ($_SESSION["people_status"] == "staff") {
+            $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number";
+        } else if ($_SESSION["people_status"] == "user") {
+            $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number and people_id = '$people_id'";
+        } else {
+            $sql = "";
+        }
     }
     $result = mysqli_query($conn, $sql);
     ?>
@@ -62,7 +67,8 @@
                                                     <tr>
                                                         <td><a href="#" class="showDetail" rep_id="<?php echo $row['rep_id']; ?>"><?php echo $row["equ_number"]; ?></a></td>
                                                         <td><?php echo $row["equ_name"]; ?></td>
-                                                        <!-- <td><?php //echo $row["rep_description"]; ?></td> -->
+                                                        <!-- <td><?php //echo $row["rep_description"]; 
+                                                                    ?></td> -->
                                                         <td><?php echo $row["rep_status"]; ?></td>
                                                         <td><?php echo $row["rep_time"]; ?></td>
                                                         <?php if ($_SESSION["people_status"] == "staff") {
@@ -155,7 +161,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>ชื่ออุปกรณ์</label>
-                                        <input type="text" name="equ_name" id="equ_name"required class="form-control" placeholder="Notebook acer" readonly>
+                                        <input type="text" name="equ_name" id="equ_name" required class="form-control" placeholder="Notebook acer" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label>รายละเอียด</label>
@@ -165,7 +171,7 @@
                                 <div class="col-md-6 border-left">
                                     <div class="form-group">
                                         <label>รายละเอียดความเสียหาย</label>
-                                        <textarea name="rep_description" id="rep_description"cols="30" rows="5" class="form-control" required readonly></textarea>
+                                        <textarea name="rep_description" id="rep_description" cols="30" rows="5" class="form-control" required readonly></textarea>
                                     </div>
                                     <div class="form-group">
                                         <div id="equAddress">
@@ -210,7 +216,7 @@
                     $("#equ_name").val(obj.equ_name)
                     $("#equ_description").val(obj.equ_description)
                     $("#rep_description").val(obj.rep_description)
-                    $("#equAddress").html(obj.people_dep_name+" -> "+obj.art_number_name)
+                    $("#equAddress").html(obj.people_dep_name + " -> " + obj.art_number_name)
                     $("#detailEqu").modal("show")
                 }
             });
@@ -255,13 +261,16 @@
                             cancel: true
                         });
                     },
-                    cancel: function() {
-                    },
+                    cancel: function() {},
                 }
             });
         })
-        $("#lookMap").click(function(){
-            $.redirect("../lookMap.php", {equ_number: equ_number, art_number: art_number, dep_id: dep_id}, "POST", "_blank"); 
+        $("#lookMap").click(function() {
+            $.redirect("../lookMap.php", {
+                equ_number: equ_number,
+                art_number: art_number,
+                dep_id: dep_id
+            }, "POST", "_blank");
         })
         $(".acceptRepair").click(function() {
             let equ_number = $(this).attr("equ_number")

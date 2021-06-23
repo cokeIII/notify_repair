@@ -44,9 +44,17 @@ if (!empty($_SESSION["people_id"])) {
     <?php if (!empty($userId)) { ?>
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link" href="<?php echo $url . '/repair/repair.php'; ?>">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-wrench"></i>
-                <span>แจ้งซ่อม</span></a>
+                <span>แจ้งซ่อม</span>
+            </a>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Repair:</h6>
+                    <a class="collapse-item" href="<?php echo $url . '/repair/repair.php'; ?>">แผนที่</a>
+                    <a class="collapse-item" href="<?php echo $url . '/repair/tableRepair.php'; ?>">ตารางรายการ</a>
+                </div>
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="<?php echo $url . '/repair/listRepair.php'; ?>">

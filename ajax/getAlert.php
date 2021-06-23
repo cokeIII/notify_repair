@@ -4,13 +4,14 @@ require_once "../connect.php";
 session_start();
 $people_id = $_SESSION["people_id"];
 if (!empty($_REQUEST["admin"])) {
-    $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number order by rep_time desc limit 8";
+    $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number order by rep_time desc limit 6";
     $res = mysqli_query($conn, $sql);
     $data = array();
     $i = 0;
     $noRead = 0;
     $arrRead = array();
     while ($row = mysqli_fetch_array($res)) {
+        $data["data"][$i]["rep_id"] = $row["rep_id"];
         $data["data"][$i]["equ_number"] = $row["equ_number"];
         $data["data"][$i]["equ_name"] = $row["equ_name"];
         $data["data"][$i]["rep_status"] = $row["rep_status"];

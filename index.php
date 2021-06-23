@@ -91,7 +91,7 @@
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $rowEquRep["equCount"];?></div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $rowEquRep["equCount"]; ?></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,22 +121,63 @@
                             </div>
                         </div> -->
                     </div>
+                    <?php
+                    $sqlListEqu = "select 
+                        equ.equ_number,
+                        equ.equ_name,
+                        equ.equ_description,
+                        peo.people_dep_name,
+                        art.dep_id,
+                        art.art_number,
+                        equ_status,
+                        concat(art.art_number,' ',art.art_name) as art_number_name
+                        from equipment equ,people_dep peo,articles art
+                        where  
+                        equ.art_number = art.art_number and
+                        art.dep_id = peo.people_dep_id";
+                    $resListEqu = mysqli_query($conn, $sqlListEqu);
 
+                    ?>
                     <!-- Content Row -->
                     <div class="card shadow mt-4">
                         <div class="card-body">
                             <table id="listEquipment">
                                 <thead>
-                                    <th>ลำดับ</th>
-                                    <th>เลขครุภัณฑ์</th>
+                                    <th>หมายเลขอุปกรณ์</th>
                                     <th>ชื่ออุปกรณ์</th>
+                                    <th>เลขห้อง</th>
                                     <th>สถานะ</th>
                                 </thead>
                                 <tbody>
-                                    <td>1</td>
-                                    <td>7440-001-0013/591-050</td>
-                                    <td>notebook acer</td>
-                                    <td class="text-success">ใช้งานได้</td>
+                                    <?php
+                                    $no = 0;
+                                    while ($rowListEqu = mysqli_fetch_array($resListEqu)) {
+                                        $listStatus = "";
+                                        if ($rowListEqu["equ_status"] == "รายการส่งซ่อม") {
+                                            $listStatus = "text-warning";
+                                        } else if ($rowListEqu["equ_status"] == "ยกเลิกรายการ" || $rowListEqu["equ_status"] == "ใช้งานไม่ได้") {
+                                            $listStatus = "text-danger";
+                                        } else if ($rowListEqu["equ_status"] == "กำลังดำเนินการซ่อม") {
+                                            $listStatus = "text-secondary";
+                                        } else if ($rowListEqu["equ_status"] == "สำเร็จ" || $rowListEqu["equ_status"] == "ปกติ") {
+                                            $listStatus = "text-success";
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td><?php echo $rowListEqu["equ_number"]; ?></td>
+                                            <td><?php echo $rowListEqu["equ_name"]; ?></td>
+                                            <td><?php echo $rowListEqu["art_number"]; ?></td>
+                                            <td class="<?php echo $listStatus; ?>"><?php echo $rowListEqu["equ_status"]; ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th>เลขห้อง</th>
+                                        <th>สถานะ</th>
+                                    </tr>
+                                </tfoot>
                                 </tbody>
                             </table>
                         </div>
@@ -167,6 +208,30 @@
 </html>
 <script>
     $(document).ready(function() {
-        $("#listEquipment").DataTable()
+        $("#listEquipment").DataTable({
+            initComplete: function() {
+                this.api().columns().every(function() {
+                    var column = this;
+                    console.log(column)
+                    if (column.selector.cols != 0 && column.selector.cols != 1) {
+                        var select = $('<select class="form-control"><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function() {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    }
+                });
+            }
+        })
     })
 </script>
