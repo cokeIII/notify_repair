@@ -61,7 +61,7 @@
                                             <input type="number" name="equ_price" class="form-control" value="<?php echo $rowEqu["equ_price"];?>">
                                         </div>
                                         <div class="form-group">
-                                            <label>ห้องที่เก็บอปกรณ์</label>
+                                            <label>ห้องที่เก็บอุปกรณ์</label>
                                             <select name="art_number" id="art_number" class="form-control" required>
                                                 <option value="">--- เลือกห้อง ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>

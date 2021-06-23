@@ -8,8 +8,15 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select ar.*,pd.people_dep_name from articles ar, people_dep pd 
-    where pd.people_dep_id = ar.dep_id";
+    if ($_SESSION["people_status"] == "staff") {
+        $sql = "select ar.*,pd.people_dep_name from articles ar, people_dep pd 
+        where pd.people_dep_id = ar.dep_id";
+    } else if ($_SESSION["people_status"] == "user") {
+        $dep_id = implode(",", $_SESSION["people_dep_id"]);
+        $sql = "select ar.*,pd.people_dep_name from articles ar, people_dep pd 
+        where pd.people_dep_id = ar.dep_id and ar.dep_id in ($dep_id)";
+    }
+
     $result = mysqli_query($conn, $sql);
     ?>
 </head>

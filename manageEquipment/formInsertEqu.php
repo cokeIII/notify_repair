@@ -8,7 +8,12 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select concat(art_number,' ',art_name) as artName, art_number  from articles";
+    if ($_SESSION["people_status"] == "staff") {
+        $sql = "select concat(art_number,' ',art_name) as artName, art_number  from articles";
+    } else if ($_SESSION["people_status"] == "user") {
+        $dep_id = implode(",", $_SESSION["people_dep_id"]);
+        $sql = "select concat(art_number,' ',art_name) as artName, art_number  from articles where dep_id in($dep_id)";
+    }
     $res = mysqli_query($conn, $sql);
 
     ?>

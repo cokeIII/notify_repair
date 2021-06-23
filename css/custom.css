@@ -16,3 +16,6 @@
 .layer-9999{
     z-index:9999 !important;
 }
+.fix-table-w{
+    max-width: 100% !important;
+}

@@ -8,7 +8,12 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select art_number,art_name,dep_id,art_pic from articles";
+    if ($_SESSION["people_status"] == "staff") {
+        $sql = "select art_number,art_name,dep_id,art_pic from articles";
+    } else if($_SESSION["people_status"] == "user"){
+        $dep_id = implode(",",$_SESSION["people_dep_id"]);
+        $sql = "select art_number,art_name,dep_id,art_pic from articles where dep_id in ($dep_id)";
+    }
     $res = mysqli_query($conn, $sql);
 
     ?>
@@ -386,7 +391,7 @@
             // $('#zoom-marker-img').zoomMarker_CanvasClean();
             // $('#zoom-marker-img').zoomMarker_EnableDrag(false);
             if ($("#art_number option:selected").attr("pic") == "") {
-                $('#zoom-marker-img').zoomMarker_LoadImage("../img/notBuild.jpg");
+                $('#zoom-marker-img').zoomMarker_LoadImage("../img/emptyRoom.jpg");
             } else {
                 $('#zoom-marker-img').zoomMarker_LoadImage("../pic_rooms/" + $("#art_number option:selected").attr("pic"));
             }

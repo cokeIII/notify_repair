@@ -1,7 +1,8 @@
 <?php
 require_once "../connect.php";
 session_start();
-
+date_default_timezone_set("Asia/Bangkok");
+$dates = date("Y-m-d H:i:sa");
 if (!empty($_REQUEST["insert"])) {
     $equ_number = $_REQUEST["equ_number"];
     $sqlCheck = "select equ_status from equipment where equ_number = '$equ_number'";
@@ -16,13 +17,15 @@ if (!empty($_REQUEST["insert"])) {
             equ_number,
             people_id,
             rep_description,
-            rep_status
+            rep_status,
+            rep_time
         ) 
         values(
             '$equ_number',
             '$people_id',
             '$rep_description',
-            'รายการส่งซ่อม'
+            'รายการส่งซ่อม',
+            '$dates'
         )
     ";
         $sqlEqu = "update equipment set equ_status = 'รายการส่งซ่อม'";
@@ -37,12 +40,49 @@ if (!empty($_REQUEST["insert"])) {
     } else {
         echo "repeat row";
     }
-} else if(!empty($_REQUEST["cancel"])){
+} else if (!empty($_REQUEST["cancel"])) {
+    $equ_number = $_REQUEST["equ_number"];
+    $rep_id = $_REQUEST["rep_id"];
+    $sql = "update equipment set equ_status = 'ปกติ' where equ_number = '$equ_number'";
+    $res = mysqli_query($conn, $sql);
+    $sqlRep = "update repair set rep_status = 'ยกเลิกรายการ', user_read = '', rep_time = '$dates'  where rep_id = '$rep_id'";
+    $resRep = mysqli_query($conn, $sqlRep);
+    if ($res && $resRep) {
+        header("location: ../repair/listRepair.php");
+    } else {
+        echo "fail";
+    }
+} else if (!empty($_REQUEST["accept"])) {
+    $equ_number = $_REQUEST["equ_number"];
+    $rep_id = $_REQUEST["rep_id"];
+    $sql = "update equipment set equ_status = 'กำลังดำเนินการซ่อม' where equ_number = '$equ_number'";
+    $res = mysqli_query($conn, $sql);
+    $sqlRep = "update repair set rep_status = 'กำลังดำเนินการซ่อม', user_read = '', rep_time = '$dates' where rep_id = '$rep_id'";
+    $resRep = mysqli_query($conn, $sqlRep);
+    if ($res && $resRep) {
+        header("location: ../repair/listRepair.php");
+    } else {
+        echo "fail";
+    }
+} else if (!empty($_REQUEST["delete"])) {
+    $rep_id = $_REQUEST["rep_id"];
+    $sql = "delete from repair where rep_id = '$rep_id'";
+    $res = mysqli_query($conn, $sql);
     $equ_number = $_REQUEST["equ_number"];
     $sql = "update equipment set equ_status = 'ปกติ' where equ_number = '$equ_number'";
-    $res = mysqli_query($conn,$sql);
-    $sqlRep = "update repair set rep_status = 'ยกเลิกรายการ' where equ_number = '$equ_number'";
-    $resRep = mysqli_query($conn,$sqlRep);
+    $res = mysqli_query($conn, $sql);
+    if ($res) {
+        header("location: ../repair/listRepair.php");
+    } else {
+        echo "fail";
+    }
+} else if (!empty($_REQUEST["success"])) {
+    $equ_number = $_REQUEST["equ_number"];
+    $rep_id = $_REQUEST["rep_id"];
+    $sql = "update equipment set equ_status = 'ปกติ' where equ_number = '$equ_number'";
+    $res = mysqli_query($conn, $sql);
+    $sqlRep = "update repair set rep_status = 'สำเร็จ', user_read = '', rep_time = '$dates' where rep_id = '$rep_id'";
+    $resRep = mysqli_query($conn, $sqlRep);
     if ($res && $resRep) {
         header("location: ../repair/listRepair.php");
     } else {

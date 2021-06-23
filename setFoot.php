@@ -11,7 +11,6 @@ $url .= $_SERVER['HTTP_HOST'];
 $url .= "/notifyRepair";
 ?>
 <!-- Bootstrap core JavaScript-->
-<script src="<?php echo $url.'/js/jquery-3.5.1.js';?>"></script>
 <!-- <script src="<?php //echo $url.'/vendor/jquery/jquery.min.js';?>"></script> -->
 <script src="<?php echo $url.'/vendor/bootstrap/js/bootstrap.bundle.min.js';?>"></script>
 
@@ -34,5 +33,4 @@ $url .= "/notifyRepair";
 <script src="<?php echo $url.'/js/jquery.redirect.js';?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="http://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

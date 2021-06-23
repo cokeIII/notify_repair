@@ -8,8 +8,15 @@
     if (empty($_SESSION["people_id"])) {
         header("location: ../index.php");
     }
-    $sql = "select equ.*,concat(art.art_number,' ',art.art_name) as artName from equipment equ, articles art
-    where equ.art_number = art.art_number";
+    if ($_SESSION["people_status"] == "staff") {
+        $sql = "select equ.*,concat(art.art_number,' ',art.art_name) as artName from equipment equ, articles art
+        where equ.art_number = art.art_number";
+    } else if ($_SESSION["people_status"] == "user") {
+        $dep_id = implode(",", $_SESSION["people_dep_id"]);
+        $sql = "select equ.*,concat(art.art_number,' ',art.art_name) as artName from equipment equ, articles art
+        where equ.art_number = art.art_number and art.dep_id in ($dep_id)";
+    }
+
     $result = mysqli_query($conn, $sql);
     ?>
 </head>
@@ -59,7 +66,7 @@
                                                         <td><?php echo $row["equ_status"]; ?></td>
                                                         <td><?php echo $row["artName"]; ?></td>
                                                         <td><a href="formEditEquipment.php?equ_number=<?php echo $row["equ_number"] ?>"><button class="btn btn-warning"><i class="fas fa-edit"></i></button></a></td>
-                                                        <td><button class="btn btn-danger delEqu" equ_number="<?php echo $row["equ_number"] ?>" ><i class="icon-color fa fa-trash"></i></button></td>
+                                                        <td><button class="btn btn-danger delEqu" equ_number="<?php echo $row["equ_number"] ?>"><i class="icon-color fa fa-trash"></i></button></td>
                                                     </tr>
                                             <?php
                                                 }
