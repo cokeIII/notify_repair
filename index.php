@@ -141,7 +141,7 @@
                     <!-- Content Row -->
                     <div class="card shadow mt-4">
                         <div class="card-body">
-                            <table id="listEquipment">
+                            <table class="table" id="listEquipment">
                                 <thead>
                                     <th>หมายเลขอุปกรณ์</th>
                                     <th>ชื่ออุปกรณ์</th>
