@@ -31,7 +31,7 @@ if (!empty($_REQUEST["insert"])) {
     if($res){
         header("location: equipment.php");
     } else {
-        echo $sql;
+        header("location: ../pageError.php?ERROR='เพิ่มข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'");
     }
 } else if(!empty($_REQUEST["update"])){
 
