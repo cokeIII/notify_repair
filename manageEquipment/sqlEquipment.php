@@ -31,7 +31,7 @@ if (!empty($_REQUEST["insert"])) {
     if($res){
         header("location: equipment.php");
     } else {
-        header("location: ../pageError.php?ERROR='เพิ่มข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'");
+        header("location: ../pageError.php?ERROR='เพิ่มข้อมูล รหัสอุปกรณ์ ".$equ_number."ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'");
     }
 } else if(!empty($_REQUEST["update"])){
 
