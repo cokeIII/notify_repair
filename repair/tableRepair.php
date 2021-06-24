@@ -46,7 +46,7 @@
                 <div class="container-fluid">
                     <div class="card">
                         <div class="card-body">
-                            <table id="listEquipment">
+                            <table class="table" id="listEquipment">
                                 <thead>
                                     <th>หมายเลขอุปกรณ์</th>
                                     <th>ชื่ออุปกรณ์</th>
@@ -75,7 +75,7 @@
                                             <td><?php echo $rowListEqu["art_number"]; ?></td>
                                             <td class="<?php echo $listStatus; ?>"><?php echo $rowListEqu["equ_status"]; ?></td>
                                             <?php if ($rowListEqu["equ_status"] == "ปกติ" || $rowListEqu["equ_status"] == "ใช้งานไม่ได้") { ?>
-                                                <td><button class="btn btn-primary" id="rep" equ_number="<?php echo $rowListEqu["equ_number"]; ?>">แจ้งซ่อม</button></td>
+                                                <td><button class="btn btn-primary rep" id="rep" equ_number="<?php echo $rowListEqu["equ_number"]; ?>">แจ้งซ่อม</button></td>
                                             <?php } else { ?>
                                                 <td></td>
                                             <?php } ?>
@@ -165,7 +165,7 @@
 </html>
 <script>
     $(document).ready(function() {
-        $("#rep").click(function() {
+        $(".rep").click(function() {
             $.ajax({
                 type: "POST",
                 url: "../ajax/getEquRep.php",

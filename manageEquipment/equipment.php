@@ -44,7 +44,7 @@
                             <div class="row mt-3 ml-3"><a href="formInsertEqu.php" class="txt-link"><button class="btn btn-primary ">เพิ่มข้อมูล</button></a></div>
                             <div class="row mt-3">
                                 <div class="col-md-12">
-                                    <table class="" id="equTable">
+                                    <table class="table" id="equTable">
                                         <thead>
                                             <tr>
                                                 <th>หมายเลขอุปกรณ์</th>

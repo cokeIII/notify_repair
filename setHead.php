@@ -35,5 +35,5 @@ error_reporting(error_reporting() & ~E_NOTICE);
 <link rel="stylesheet" href="<?php echo $url.'/js/jquery-ui-1.12.1.custom/jquery-ui.min.css';?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <script src="<?php echo $url.'/js/jquery-3.5.1.js';?>"></script>
-
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 

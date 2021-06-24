@@ -23,14 +23,14 @@
 
                     </div>
 
-                    <a class="dropdown-item text-center small text-gray-500" href="<?php echo $url.'/repair/listRepair.php';?>">Read More Messages</a>
+                    <a class="dropdown-item text-center small text-gray-500" href="<?php echo $url . '/repair/listRepair.php'; ?>">Read More Messages</a>
                 </div>
             </li>
 
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $_SESSION["people_Name"]."(".$_SESSION["people_status"].")"; ?></span>
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $_SESSION["people_Name"] . "(" . $_SESSION["people_status"] . ")"; ?></span>
                 </a>
             </li>
         </ul>
@@ -39,11 +39,14 @@
 <!-- End of Topbar -->
 <Script>
     $(document).ready(function() {
-        $(document).on("click",".alertItem",function(){
-            $.redirect("<?php echo $url.'/repair/listRepair.php';?>", {rep_id: $(this).attr("rep_id")}, "POST");
+        $(document).on("click", ".alertItem", function() {
+            $.redirect("<?php echo $url . '/repair/listRepair.php'; ?>", {
+                rep_id: $(this).attr("rep_id")
+            }, "POST");
         })
         reAlert()
         $("#boxAlert").click(function() {
+            $("#badgeCounter").html("")
             $.ajax({
                 type: "POST",
                 url: "<?php echo $url . "/ajax/getAlert.php"; ?>",
@@ -55,6 +58,17 @@
                 }
             });
         })
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('8feba6258ac6560c7337', {
+            cluster: 'ap2'
+        });
+
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('my-event', function(data) {
+            reAlert()
+        });
     })
 
     function reAlert() {
@@ -85,13 +99,13 @@
                         logoAlert = '<h3><i class="fas fa-clipboard-check text-success"></i></h3>'
                     }
                     $("#alertRepair").append(
-                        '<div class="dropdown-item d-flex align-items-center alertItem"  rep_id="'+ value.rep_id +'">' +
+                        '<div class="dropdown-item d-flex align-items-center alertItem"  rep_id="' + value.rep_id + '">' +
                         '<div class="dropdown-list-image mr-3">' +
                         logoAlert +
                         '</div>' +
                         '<div class="font-weight-bold">' +
                         '<div class="text-truncate">' + value.equ_number + " " + value.equ_name + '</div>' +
-                        '<div class="small text-gray-500">' + value.rep_time +' '+ value.rep_status + '</div>' +
+                        '<div class="small text-gray-500">' + value.rep_time + ' ' + value.rep_status + '</div>' +
                         '</div>' +
                         '</div>')
                 });

@@ -3,8 +3,13 @@ error_reporting(error_reporting() & ~E_NOTICE);
 require_once "../connect.php";
 session_start();
 $people_id = $_SESSION["people_id"];
+$people_status = $_SESSION["people_status"];
 if (!empty($_REQUEST["admin"])) {
-    $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number order by rep_time desc limit 6";
+    if ($people_status == "staff") {
+        $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number order by rep_time desc limit 6";
+    } else if($people_status == "user") {
+        $sql = "select * from repair rep, equipment equ where rep.equ_number = equ.equ_number and rep.people_id = '$people_id' order by rep_time desc limit 6";
+    }
     $res = mysqli_query($conn, $sql);
     $data = array();
     $i = 0;
@@ -18,9 +23,9 @@ if (!empty($_REQUEST["admin"])) {
         $data["data"][$i]["rep_time"] = $row["rep_time"];
         if ($row["user_read"] != "") {
             $arrRead = json_decode($row["user_read"], true);
-            if(!in_array($people_id,$arrRead)){
+            if (!in_array($people_id, $arrRead)) {
                 $noRead++;
-            }   
+            }
         } else {
             $noRead++;
         }
@@ -35,14 +40,14 @@ if (!empty($_REQUEST["admin"])) {
     while ($row = mysqli_fetch_array($resList)) {
         if ($row["user_read"] != "") {
             $arrRead = json_decode($row["user_read"]);
-            if(!in_array($people_id,$arrRead)){
+            if (!in_array($people_id, $arrRead)) {
                 array_push($arrRead, $people_id);
-            }   
+            }
         } else {
             $arrRead = array();
             array_push($arrRead, $people_id);
         }
-        $sqlRead = "update repair set user_read = '" . json_encode($arrRead, JSON_UNESCAPED_UNICODE) . "' where rep_id = '".$row["rep_id"]."'";
+        $sqlRead = "update repair set user_read = '" . json_encode($arrRead, JSON_UNESCAPED_UNICODE) . "' where rep_id = '" . $row["rep_id"] . "'";
         $resRead = mysqli_query($conn, $sqlRead);
     }
 

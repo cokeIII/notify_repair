@@ -2,7 +2,23 @@
 require_once "../connect.php";
 session_start();
 date_default_timezone_set("Asia/Bangkok");
+// require('../vendor/autoload.php');
 $dates = date("Y-m-d H:i:sa");
+require '../vendor/autoload.php';
+
+$options = array(
+  'cluster' => 'ap2',
+  'useTLS' => true
+);
+$pusher = new Pusher\Pusher(
+  '8feba6258ac6560c7337',
+  'd0638936a7e53156f21a',
+  '1224681',
+  $options
+);
+
+$data['message'] = 'hello world';
+$pusher->trigger('my-channel', 'my-event', $data);
 if (!empty($_REQUEST["insert"])) {
     $equ_number = $_REQUEST["equ_number"];
     $sqlCheck = "select equ_status from equipment where equ_number = '$equ_number'";
@@ -89,3 +105,5 @@ if (!empty($_REQUEST["insert"])) {
         echo "fail";
     }
 }
+
+
