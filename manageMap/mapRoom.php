@@ -50,7 +50,7 @@
                                         <div class="form-group">
                                             <label>ห้อง</label>
                                             <select name="art_number" id="art_number" class="form-control" style="width: 100%">
-                                                <option value="">--- กรุณาเลือกห้อง ---</option>
+                                                <option pic="" dep_id="" value="">--- กรุณาเลือกห้อง ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>
                                                     <option pic="<?php echo $row["art_pic"]; ?>" dep_id="<?php echo $row["dep_id"]; ?>" value="<?php echo $row["art_number"]; ?>"><?php echo $row["art_number"] . ' ' . $row["art_name"]; ?></option>
                                                 <?php } ?>
