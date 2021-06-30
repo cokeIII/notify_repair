@@ -47,7 +47,7 @@
                                         <div class="form-group">
                                             <label>แผนก</label>
                                             <select name="dep_id" id="dep_id" class="form-control" style="width: 100%">
-                                                <option value="">--- กรุณาเลือกแผนก ---</option>
+                                                <option value="" depLevel="" pic="">--- กรุณาเลือกแผนก ---</option>
                                                 <?php while ($row = mysqli_fetch_array($res)) { ?>
                                                     <option value="<?php echo $row["people_dep_id"]; ?>" depLevel="<?php echo $row["level"]; ?>" pic="<?php echo $row["pic_build"]; ?>"><?php echo "ชั้น" . $row["level"] . "-" . $row["people_dep_name"]; ?></option>
                                                 <?php } ?>
