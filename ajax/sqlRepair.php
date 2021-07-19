@@ -8,7 +8,8 @@ require '../vendor/autoload.php';
 
 $options = array(
     'cluster' => 'ap2',
-    'useTLS' => true
+    'useTLS' => true,
+    'encrypted' => false
 );
 $pusher = new Pusher\Pusher(
     '05ee423672484752406d',
