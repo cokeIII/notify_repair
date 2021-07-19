@@ -37,6 +37,7 @@
     <?php } ?>
 </nav>
 <!-- End of Topbar -->
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 <Script>
     $(document).ready(function() {
         $(document).on("click", ".alertItem", function() {
@@ -109,7 +110,6 @@
                         '</div>' +
                         '</div>')
                 });
-
             }
         });
     }
