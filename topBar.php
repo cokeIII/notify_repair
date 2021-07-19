@@ -60,18 +60,18 @@
             });
         })
         // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+        // Pusher.logToConsole = true;
 
-        var pusher = new Pusher('05ee423672484752406d', {
-            cluster: 'ap2',
-            authTransport: "jsonp",
-            authEndpoint: "http://myserver.com/pusher_jsonp_auth",
-        });
+        // var pusher = new Pusher('05ee423672484752406d', {
+        //     cluster: 'ap2',
+        //     authTransport: "jsonp",
+        //     authEndpoint: "http://myserver.com/pusher_jsonp_auth",
+        // });
 
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('my-event', function(data) {
-            reAlert()
-        });
+        // var channel = pusher.subscribe('my-channel');
+        // channel.bind('my-event', function(data) {
+        //     reAlert()
+        // });
     })
 
     function reAlert() {
