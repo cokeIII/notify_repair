@@ -4,19 +4,19 @@ session_start();
 date_default_timezone_set("Asia/Bangkok");
 // require('../vendor/autoload.php');
 $dates = date("Y-m-d H:i:sa");
-// require '../vendor/autoload.php';
+require '../vendor/autoload.php';
 
-// $options = array(
-//     'cluster' => 'ap2',
-//     // 'useTLS' => true,
-//     'encrypted' => false
-// );
-// $pusher = new Pusher\Pusher(
-//     '05ee423672484752406d',
-//     '890135aa8648a8a9ba37',
-//     '1237719',
-//     $options
-// );
+$options = array(
+    'cluster' => 'ap2',
+    'useTLS' => true,
+    'encrypted' => true
+);
+$pusher = new Pusher\Pusher(
+    '05ee423672484752406d',
+    '890135aa8648a8a9ba37',
+    '1237719',
+    $options
+);
 
 // $data['message'] = 'hello world';
 // $pusher->trigger('my-channel', 'my-event', $data);
