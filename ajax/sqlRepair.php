@@ -8,7 +8,7 @@ require '../vendor/autoload.php';
 
 $options = array(
     'cluster' => 'ap2',
-    'useTLS' => true,
+    'useTLS' => true
 );
 $pusher = new Pusher\Pusher(
     '05ee423672484752406d',
@@ -17,8 +17,8 @@ $pusher = new Pusher\Pusher(
     $options
 );
 
-// $data['message'] = 'hello world';
-// $pusher->trigger('my-channel', 'my-event', $data);
+$data['message'] = 'hello world';
+$pusher->trigger('my-channel', 'my-event', $data);
 if (!empty($_REQUEST["insert"])) {
     $equ_number = $_REQUEST["equ_number"];
     $sqlCheck = "select equ_status from equipment where equ_number = '$equ_number'";
