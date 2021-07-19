@@ -1,5 +1,5 @@
 {
     "require": {
-        "pusher/pusher-php-server": "v3.0.3"
+        "pusher/pusher-php-server": "^7.0"
     }
 }
