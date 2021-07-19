@@ -8,7 +8,7 @@ require '../vendor/autoload.php';
 
 $options = array(
     'cluster' => 'ap2',
-    'useTLS' => true,
+    // 'useTLS' => true,
     'encrypted' => false
 );
 $pusher = new Pusher\Pusher(
