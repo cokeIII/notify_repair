@@ -65,10 +65,12 @@
         var pusher = new Pusher('05ee423672484752406d', {
             cluster: 'ap2',
             encrypted:true,
+            data:{},
         });
 
         var channel = pusher.subscribe('my-channel');
         channel.bind('my-event', function(data) {
+            console.log(data)
             reAlert()
         });
     })
