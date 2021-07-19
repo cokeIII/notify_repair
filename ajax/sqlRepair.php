@@ -18,6 +18,7 @@ $pusher = new Pusher\Pusher(
 );
 
 $data['message'] = 'hello world';
+$data['data'] = true;
 $pusher->trigger('my-channel', 'my-event', $data);
 if (!empty($_REQUEST["insert"])) {
     $equ_number = $_REQUEST["equ_number"];

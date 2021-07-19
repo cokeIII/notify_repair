@@ -68,7 +68,6 @@
 
         var channel = pusher.subscribe('my-channel');
         channel.bind('my-event', function(data) {
-            console.log(data)
             reAlert()
         });
     })
