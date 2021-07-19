@@ -7,14 +7,14 @@ $dates = date("Y-m-d H:i:sa");
 require '../vendor/autoload.php';
 
 $options = array(
-  'cluster' => 'ap2',
-  'useTLS' => true
+    'cluster' => 'ap2',
+    'useTLS' => true
 );
 $pusher = new Pusher\Pusher(
-  '8feba6258ac6560c7337',
-  'd0638936a7e53156f21a',
-  '1224681',
-  $options
+    '05ee423672484752406d',
+    '890135aa8648a8a9ba37',
+    '1237719',
+    $options
 );
 
 $data['message'] = 'hello world';
@@ -105,5 +105,3 @@ if (!empty($_REQUEST["insert"])) {
         echo "fail";
     }
 }
-
-
