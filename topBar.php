@@ -37,7 +37,7 @@
     <?php } ?>
 </nav>
 <!-- End of Topbar -->
-<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<!-- <script src="https://js.pusher.com/7.0/pusher.min.js"></script> -->
 <Script>
     $(document).ready(function() {
         $(document).on("click", ".alertItem", function() {
@@ -59,18 +59,18 @@
                 }
             });
         })
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+        // // Enable pusher logging - don't include this in production
+        // Pusher.logToConsole = true;
 
-        var pusher = new Pusher('05ee423672484752406d', {
-            cluster: 'ap2',
-            encrypted:false,
-        });
+        // var pusher = new Pusher('05ee423672484752406d', {
+        //     cluster: 'ap2',
+        //     encrypted:false,
+        // });
 
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('my-event', function(data) {
-            reAlert()
-        });
+        // var channel = pusher.subscribe('my-channel');
+        // channel.bind('my-event', function(data) {
+        //     reAlert()
+        // });
     })
 
     function reAlert() {
