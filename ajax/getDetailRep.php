@@ -9,6 +9,8 @@ rep.rep_description,
 peo.people_dep_name,
 art.dep_id,
 art.art_number,
+art.art_id,
+art.level,
 concat(art.art_number,' ',art.art_name) as art_number_name
 from repair rep, equipment equ,people_dep peo,articles art
 where rep.equ_number = equ.equ_number and 
@@ -27,5 +29,8 @@ $data["people_dep_name"] = $row["people_dep_name"];
 $data["art_number_name"] = $row["art_number_name"];
 $data["dep_id"] = $row["dep_id"];
 $data["art_number"] = $row["art_number"];
+$data["art_id"] = $row["art_id"];
+$data["level"] = $row["level"];
+
 
 echo json_encode($data);

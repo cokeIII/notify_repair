@@ -200,6 +200,8 @@
         let equ_number
         let art_number
         let dep_id
+        let art_id
+        let level
         $(".showDetail").click(function() {
             $.ajax({
                 type: "POST",
@@ -212,6 +214,8 @@
                     equ_number = obj.equ_number
                     art_number = obj.art_number
                     dep_id = obj.dep_id
+                    art_id = obj.art_id
+                    level = obj.level
                     $("#equ_number").val(obj.equ_number)
                     $("#equ_name").val(obj.equ_name)
                     $("#equ_description").val(obj.equ_description)
@@ -269,7 +273,9 @@
             $.redirect("../lookMap.php", {
                 equ_number: equ_number,
                 art_number: art_number,
-                dep_id: dep_id
+                dep_id: dep_id,
+                art_id: art_id,
+                level: level
             }, "POST", "_blank");
         })
         $(".acceptRepair").click(function() {

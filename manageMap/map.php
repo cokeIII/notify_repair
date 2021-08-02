@@ -182,8 +182,11 @@
                                     },
                                     success: function(result) {
                                         if (result == "success") {
-                                            $('#formLocation').trigger("reset");
-
+                                            
+                                            if (i == level) {
+                                                $("#locationName").val("").trigger('change')
+                                                $('#formLocation').trigger("reset");
+                                            }
                                             $.bootstrapGrowl("เพิ่มข้อมูลสำเร็จ", // Messages
                                                 { // options
                                                     type: "success", // info, success, warning and danger
@@ -279,7 +282,7 @@
                 if (++tagNumber >= 10)
                     tagNumber = 1
 
-                $("#locationName").val("").trigger('change')
+
             });
 
             // listen to marker click event, print to console and delete the marker
