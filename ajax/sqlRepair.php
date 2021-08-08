@@ -4,7 +4,7 @@ session_start();
 date_default_timezone_set("Asia/Bangkok");
 // require('../vendor/autoload.php');
 $dates = date("Y-m-d H:i:sa");
-// require '../vendor/autoload.php';
+require '../vendor/autoload.php';
 
 // $options = array(
 //     'cluster' => 'ap2',
